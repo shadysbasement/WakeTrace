@@ -63,7 +63,7 @@ def _install():
                     break
                 path = frame.f_code.co_filename
                 if path.startswith('/work/venv/') and '/site-packages/' in path:
-                    return {'status': 'known', 'path': '<PACKAGE>' +
+                    return {'status': 'known', 'path': '<PACKAGE>/' +
                             path.split('/site-packages/', 1)[1],
                             'line': frame.f_lineno, 'function': frame.f_code.co_name}
                 if path.startswith('/work/') and not path.startswith('/work/venv/'):

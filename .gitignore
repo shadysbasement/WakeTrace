@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+waketrace_trace.jsonl
+dist/
+build/
+*.egg-info/
+.venv/
+output/
+.env
+.env.*
+*.pem
+*.key
+*.sig
+*.p12
+*.pfx
