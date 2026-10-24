@@ -1,0 +1,21 @@
+{
+    "schema_version": "1.0",
+    "revision": "example_1",
+    "candidate_type": "script",
+    "baseline": {
+        "path": "examples/baseline.py",
+        "locks": {
+            "default": "examples/baseline.lock.json"
+        },
+        "manifest": "examples/approval.json",
+        "signature": "examples/approval.sig"
+    },
+    "scenarios": [
+        {"id": "default", "args": [], "env": {}}
+    ],
+    "horizons": [0,24],
+    "file_age_hours": 0,
+    "observer": {"mode": "strace", "required": true},
+    "limits": {"timeout": 10, "memory_mb": 512},
+    "policy": {}
+}
