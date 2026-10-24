@@ -1,8 +1,6 @@
-[![WakeTrace banner](docs/assets/waketrace-banner.svg)](docs/assets/waketrace-banner.svg)
+![WakeTrace banner](docs/assets/waketrace-banner.svg)
 
 # WakeTrace
-
-[GitHub repo](https://github.com/shadysbasement/WakeTrace) · [Full-size banner](docs/assets/waketrace-banner.svg) · [Logo](docs/assets/waketrace-logo.svg) · [Demo screenshot](docs/assets/demo-terminal.png) · [Command screenshot](docs/assets/commands-terminal.png)
 
 I started WakeTrace because I kept thinking about a script that behaves normally when you first run it, then does something completely different a few days later. If I have to wait three days to find out, I've already missed the point.
 
