@@ -1,0 +1,44 @@
+{
+  "schema_version": "2.0",
+  "target_script": "sample.py",
+  "baseline_schema_version": "2.0",
+  "execution_backend": "bubblewrap",
+  "horizons_tested": [
+    0
+  ],
+  "run_health": {
+    "0": {
+      "complete": false,
+      "stage": "trace",
+      "reason": "hook missing",
+      "network_isolated": true
+    }
+  },
+  "events": {
+    "0": []
+  },
+  "canary_evidence": {
+    "0": []
+  },
+  "transmission_status": "unknown",
+  "temporal_coverage_missing": [],
+  "findings": [],
+  "candidate_capabilities": {
+    "files_read": [],
+    "files_written": [],
+    "env_vars_read": [],
+    "network_hosts": [],
+    "processes_spawned": [],
+    "native_libs_loaded": []
+  },
+  "horizon_breakdown": {
+    "0": {
+      "findings": [],
+      "new_findings": [],
+      "risk_score": 0,
+      "activity": {}
+    }
+  },
+  "risk_score": 0,
+  "verdict": "INCOMPLETE"
+}

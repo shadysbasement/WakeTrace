@@ -1,0 +1,1588 @@
+{
+  "schema_version": "2.0",
+  "target_script": "trojan_v2.py",
+  "baseline_schema_version": "2.0",
+  "baseline_execution_backend": "bubblewrap",
+  "execution_backend": "bubblewrap",
+  "file_hash_changed": true,
+  "horizons_tested": [
+    0,
+    24,
+    72,
+    168
+  ],
+  "run_health": {
+    "0": {
+      "complete": true,
+      "stage": "complete",
+      "reason": null,
+      "network_isolated": true
+    },
+    "24": {
+      "complete": true,
+      "stage": "complete",
+      "reason": null,
+      "network_isolated": true
+    },
+    "72": {
+      "complete": true,
+      "stage": "complete",
+      "reason": null,
+      "network_isolated": true
+    },
+    "168": {
+      "complete": true,
+      "stage": "complete",
+      "reason": null,
+      "network_isolated": true
+    }
+  },
+  "events": {
+    "0": [
+      {
+        "id": 1,
+        "ts_real": 1793102497.8413134,
+        "ts_warped": 1793102497.8413134,
+        "virtual_offset_sec": 0.0,
+        "category": "health",
+        "action": "hook_ready",
+        "source": {
+          "status": "unknown",
+          "reason": "hook lifecycle or shutdown scan"
+        },
+        "target": "hook",
+        "extra": {}
+      },
+      {
+        "id": 2,
+        "ts_real": 1793102497.8414419,
+        "ts_warped": 1793102497.8414419,
+        "virtual_offset_sec": 0.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "unknown",
+          "reason": "no target frame"
+        },
+        "target": "<PROJECT>/trojan_v2.py",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 3,
+        "ts_real": 1793102497.841597,
+        "ts_warped": 1793102497.841597,
+        "virtual_offset_sec": 0.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "unknown",
+          "reason": "no target frame"
+        },
+        "target": "<PROJECT>/trojan_v2.py",
+        "extra": {
+          "mode": "rb",
+          "flags": 0
+        }
+      },
+      {
+        "id": 4,
+        "ts_real": 1793102497.8460643,
+        "ts_warped": 1793102497.8460643,
+        "virtual_offset_sec": 0.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 11,
+          "function": "<module>"
+        },
+        "target": "<PROJECT>/demo_config.json",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 5,
+        "ts_real": 1793102497.846149,
+        "ts_warped": 1793102497.846149,
+        "virtual_offset_sec": 0.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 12,
+          "function": "<module>"
+        },
+        "target": "APP_TIMEZONE",
+        "extra": {
+          "found": false
+        }
+      },
+      {
+        "id": 6,
+        "ts_real": 1793102497.8465328,
+        "ts_warped": 1793102497.8465328,
+        "virtual_offset_sec": 0.0,
+        "category": "health",
+        "action": "hook_done",
+        "source": {
+          "status": "unknown",
+          "reason": "hook lifecycle or shutdown scan"
+        },
+        "target": "hook",
+        "extra": {}
+      },
+      {
+        "id": 7,
+        "category": "output",
+        "action": "captured",
+        "source": {
+          "status": "unknown",
+          "reason": "captured stream"
+        },
+        "target": "stdout",
+        "extra": {
+          "length": 62
+        }
+      }
+    ],
+    "24": [
+      {
+        "id": 1,
+        "ts_real": 1793102498.0068753,
+        "ts_warped": 1793188898.0068753,
+        "virtual_offset_sec": 86400.0,
+        "category": "health",
+        "action": "hook_ready",
+        "source": {
+          "status": "unknown",
+          "reason": "hook lifecycle or shutdown scan"
+        },
+        "target": "hook",
+        "extra": {}
+      },
+      {
+        "id": 2,
+        "ts_real": 1793102498.0070047,
+        "ts_warped": 1793188898.0070047,
+        "virtual_offset_sec": 86400.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "unknown",
+          "reason": "no target frame"
+        },
+        "target": "<PROJECT>/trojan_v2.py",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 3,
+        "ts_real": 1793102498.0071719,
+        "ts_warped": 1793188898.0071719,
+        "virtual_offset_sec": 86400.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "unknown",
+          "reason": "no target frame"
+        },
+        "target": "<PROJECT>/trojan_v2.py",
+        "extra": {
+          "mode": "rb",
+          "flags": 0
+        }
+      },
+      {
+        "id": 4,
+        "ts_real": 1793102498.0116658,
+        "ts_warped": 1793188898.0116658,
+        "virtual_offset_sec": 86400.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 11,
+          "function": "<module>"
+        },
+        "target": "<PROJECT>/demo_config.json",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 5,
+        "ts_real": 1793102498.0117512,
+        "ts_warped": 1793188898.0117512,
+        "virtual_offset_sec": 86400.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 12,
+          "function": "<module>"
+        },
+        "target": "APP_TIMEZONE",
+        "extra": {
+          "found": false
+        }
+      },
+      {
+        "id": 6,
+        "ts_real": 1793102498.0121355,
+        "ts_warped": 1793188898.0121355,
+        "virtual_offset_sec": 86400.0,
+        "category": "health",
+        "action": "hook_done",
+        "source": {
+          "status": "unknown",
+          "reason": "hook lifecycle or shutdown scan"
+        },
+        "target": "hook",
+        "extra": {}
+      },
+      {
+        "id": 7,
+        "category": "output",
+        "action": "captured",
+        "source": {
+          "status": "unknown",
+          "reason": "captured stream"
+        },
+        "target": "stdout",
+        "extra": {
+          "length": 62
+        }
+      }
+    ],
+    "72": [
+      {
+        "id": 1,
+        "ts_real": 1793102498.1758425,
+        "ts_warped": 1793361698.1758425,
+        "virtual_offset_sec": 259200.0,
+        "category": "health",
+        "action": "hook_ready",
+        "source": {
+          "status": "unknown",
+          "reason": "hook lifecycle or shutdown scan"
+        },
+        "target": "hook",
+        "extra": {}
+      },
+      {
+        "id": 2,
+        "ts_real": 1793102498.1759753,
+        "ts_warped": 1793361698.1759753,
+        "virtual_offset_sec": 259200.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "unknown",
+          "reason": "no target frame"
+        },
+        "target": "<PROJECT>/trojan_v2.py",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 3,
+        "ts_real": 1793102498.1761305,
+        "ts_warped": 1793361698.1761305,
+        "virtual_offset_sec": 259200.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "unknown",
+          "reason": "no target frame"
+        },
+        "target": "<PROJECT>/trojan_v2.py",
+        "extra": {
+          "mode": "rb",
+          "flags": 0
+        }
+      },
+      {
+        "id": 4,
+        "ts_real": 1793102498.1806931,
+        "ts_warped": 1793361698.1806931,
+        "virtual_offset_sec": 259200.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 11,
+          "function": "<module>"
+        },
+        "target": "<PROJECT>/demo_config.json",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 5,
+        "ts_real": 1793102498.1807826,
+        "ts_warped": 1793361698.1807826,
+        "virtual_offset_sec": 259200.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 12,
+          "function": "<module>"
+        },
+        "target": "APP_TIMEZONE",
+        "extra": {
+          "found": false
+        }
+      },
+      {
+        "id": 6,
+        "ts_real": 1793102498.2130177,
+        "ts_warped": 1793361698.2130177,
+        "virtual_offset_sec": 259200.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 20,
+          "function": "<module>"
+        },
+        "target": "OPENAI_API_KEY",
+        "extra": {
+          "found": true
+        }
+      },
+      {
+        "id": 7,
+        "ts_real": 1793102498.21307,
+        "ts_warped": 1793361698.21307,
+        "virtual_offset_sec": 259200.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 21,
+          "function": "<module>"
+        },
+        "target": "AWS_SECRET_ACCESS_KEY",
+        "extra": {
+          "found": true
+        }
+      },
+      {
+        "id": 8,
+        "ts_real": 1793102498.213149,
+        "ts_warped": 1793361698.213149,
+        "virtual_offset_sec": 259200.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 23,
+          "function": "<module>"
+        },
+        "target": "<PROJECT>/.env",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 9,
+        "ts_real": 1793102498.2132578,
+        "ts_warped": 1793361698.2132578,
+        "virtual_offset_sec": 259200.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 30,
+          "function": "<module>"
+        },
+        "target": "REQUEST_METHOD",
+        "extra": {
+          "found": false
+        }
+      },
+      {
+        "id": 10,
+        "ts_real": 1793102498.2147434,
+        "ts_warped": 1793361698.2147434,
+        "virtual_offset_sec": 259200.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 30,
+          "function": "<module>"
+        },
+        "target": "SSLKEYLOGFILE",
+        "extra": {
+          "found": false
+        }
+      },
+      {
+        "id": 11,
+        "ts_real": 1793102498.2150788,
+        "ts_warped": 1793361698.2150788,
+        "virtual_offset_sec": 259200.0,
+        "category": "net",
+        "action": "socket_connect",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 30,
+          "function": "<module>"
+        },
+        "target": "93.184.216.34",
+        "extra": {
+          "blocked": true,
+          "audit_event": "urllib.Request"
+        }
+      },
+      {
+        "id": 12,
+        "ts_real": 1793102498.2155545,
+        "ts_warped": 1793361698.2155545,
+        "virtual_offset_sec": 259200.0,
+        "category": "health",
+        "action": "hook_done",
+        "source": {
+          "status": "unknown",
+          "reason": "hook lifecycle or shutdown scan"
+        },
+        "target": "hook",
+        "extra": {}
+      },
+      {
+        "id": 13,
+        "category": "output",
+        "action": "captured",
+        "source": {
+          "status": "unknown",
+          "reason": "captured stream"
+        },
+        "target": "stdout",
+        "extra": {
+          "length": 62
+        }
+      }
+    ],
+    "168": [
+      {
+        "id": 1,
+        "ts_real": 1793102498.3514588,
+        "ts_warped": 1793707298.3514588,
+        "virtual_offset_sec": 604800.0,
+        "category": "health",
+        "action": "hook_ready",
+        "source": {
+          "status": "unknown",
+          "reason": "hook lifecycle or shutdown scan"
+        },
+        "target": "hook",
+        "extra": {}
+      },
+      {
+        "id": 2,
+        "ts_real": 1793102498.3516626,
+        "ts_warped": 1793707298.3516626,
+        "virtual_offset_sec": 604800.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "unknown",
+          "reason": "no target frame"
+        },
+        "target": "<PROJECT>/trojan_v2.py",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 3,
+        "ts_real": 1793102498.3518608,
+        "ts_warped": 1793707298.3518608,
+        "virtual_offset_sec": 604800.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "unknown",
+          "reason": "no target frame"
+        },
+        "target": "<PROJECT>/trojan_v2.py",
+        "extra": {
+          "mode": "rb",
+          "flags": 0
+        }
+      },
+      {
+        "id": 4,
+        "ts_real": 1793102498.3570511,
+        "ts_warped": 1793707298.3570511,
+        "virtual_offset_sec": 604800.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 11,
+          "function": "<module>"
+        },
+        "target": "<PROJECT>/demo_config.json",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 5,
+        "ts_real": 1793102498.3571644,
+        "ts_warped": 1793707298.3571644,
+        "virtual_offset_sec": 604800.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 12,
+          "function": "<module>"
+        },
+        "target": "APP_TIMEZONE",
+        "extra": {
+          "found": false
+        }
+      },
+      {
+        "id": 6,
+        "ts_real": 1793102498.3869317,
+        "ts_warped": 1793707298.3869317,
+        "virtual_offset_sec": 604800.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 20,
+          "function": "<module>"
+        },
+        "target": "OPENAI_API_KEY",
+        "extra": {
+          "found": true
+        }
+      },
+      {
+        "id": 7,
+        "ts_real": 1793102498.3869872,
+        "ts_warped": 1793707298.3869872,
+        "virtual_offset_sec": 604800.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 21,
+          "function": "<module>"
+        },
+        "target": "AWS_SECRET_ACCESS_KEY",
+        "extra": {
+          "found": true
+        }
+      },
+      {
+        "id": 8,
+        "ts_real": 1793102498.3870723,
+        "ts_warped": 1793707298.3870723,
+        "virtual_offset_sec": 604800.0,
+        "category": "file",
+        "action": "file_open",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 23,
+          "function": "<module>"
+        },
+        "target": "<PROJECT>/.env",
+        "extra": {
+          "mode": "r",
+          "flags": 524288
+        }
+      },
+      {
+        "id": 9,
+        "ts_real": 1793102498.3871856,
+        "ts_warped": 1793707298.3871856,
+        "virtual_offset_sec": 604800.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 30,
+          "function": "<module>"
+        },
+        "target": "REQUEST_METHOD",
+        "extra": {
+          "found": false
+        }
+      },
+      {
+        "id": 10,
+        "ts_real": 1793102498.3887215,
+        "ts_warped": 1793707298.3887215,
+        "virtual_offset_sec": 604800.0,
+        "category": "env",
+        "action": "env_read",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 30,
+          "function": "<module>"
+        },
+        "target": "SSLKEYLOGFILE",
+        "extra": {
+          "found": false
+        }
+      },
+      {
+        "id": 11,
+        "ts_real": 1793102498.389046,
+        "ts_warped": 1793707298.389046,
+        "virtual_offset_sec": 604800.0,
+        "category": "net",
+        "action": "socket_connect",
+        "source": {
+          "status": "known",
+          "path": "<PROJECT>/trojan_v2.py",
+          "line": 30,
+          "function": "<module>"
+        },
+        "target": "93.184.216.34",
+        "extra": {
+          "blocked": true,
+          "audit_event": "urllib.Request"
+        }
+      },
+      {
+        "id": 12,
+        "ts_real": 1793102498.389433,
+        "ts_warped": 1793707298.389433,
+        "virtual_offset_sec": 604800.0,
+        "category": "health",
+        "action": "hook_done",
+        "source": {
+          "status": "unknown",
+          "reason": "hook lifecycle or shutdown scan"
+        },
+        "target": "hook",
+        "extra": {}
+      },
+      {
+        "id": 13,
+        "category": "output",
+        "action": "captured",
+        "source": {
+          "status": "unknown",
+          "reason": "captured stream"
+        },
+        "target": "stdout",
+        "extra": {
+          "length": 62
+        }
+      }
+    ]
+  },
+  "canary_evidence": {
+    "0": [],
+    "24": [],
+    "72": [
+      {
+        "name": "OPENAI_API_KEY",
+        "channel": "environment_read",
+        "stage": "read",
+        "event_id": 6,
+        "status": "unknown",
+        "horizon": 72
+      },
+      {
+        "name": "AWS_SECRET_ACCESS_KEY",
+        "channel": "environment_read",
+        "stage": "read",
+        "event_id": 7,
+        "status": "unknown",
+        "horizon": 72
+      },
+      {
+        "name": "OPENAI_API_KEY",
+        "channel": "network_attempt",
+        "stage": "prepared_request",
+        "event_id": 11,
+        "status": "blocked",
+        "hook_status": "blocked",
+        "os_status": "unknown",
+        "blocker": "WakeTrace hook",
+        "horizon": 72
+      }
+    ],
+    "168": [
+      {
+        "name": "OPENAI_API_KEY",
+        "channel": "environment_read",
+        "stage": "read",
+        "event_id": 6,
+        "status": "unknown",
+        "horizon": 168
+      },
+      {
+        "name": "AWS_SECRET_ACCESS_KEY",
+        "channel": "environment_read",
+        "stage": "read",
+        "event_id": 7,
+        "status": "unknown",
+        "horizon": 168
+      },
+      {
+        "name": "OPENAI_API_KEY",
+        "channel": "network_attempt",
+        "stage": "prepared_request",
+        "event_id": 11,
+        "status": "blocked",
+        "hook_status": "blocked",
+        "os_status": "unknown",
+        "blocker": "WakeTrace hook",
+        "horizon": 168
+      }
+    ]
+  },
+  "transmission_status": "unknown",
+  "temporal_coverage_missing": [
+    72,
+    168
+  ],
+  "ignored_incidental_env": [
+    "REQUEST_METHOD",
+    "SSLKEYLOGFILE"
+  ],
+  "findings": [
+    {
+      "category": "env_vars_read",
+      "item": "AWS_SECRET_ACCESS_KEY",
+      "change": "new",
+      "rule": "env_read_sensitive",
+      "severity": "HIGH",
+      "base_points": 25,
+      "multiplier": 1.5,
+      "points": 37.5,
+      "first_seen_hour": 72,
+      "seen_at_hours": [
+        72,
+        168
+      ],
+      "is_delayed_trigger": true,
+      "evidence_ids": [
+        {
+          "horizon": 72,
+          "event_id": 7
+        },
+        {
+          "horizon": 168,
+          "event_id": 7
+        }
+      ],
+      "reason": "new env_vars_read: AWS_SECRET_ACCESS_KEY first observed at +72h"
+    },
+    {
+      "category": "env_vars_read",
+      "item": "OPENAI_API_KEY",
+      "change": "new",
+      "rule": "env_read_sensitive",
+      "severity": "HIGH",
+      "base_points": 25,
+      "multiplier": 1.5,
+      "points": 37.5,
+      "first_seen_hour": 72,
+      "seen_at_hours": [
+        72,
+        168
+      ],
+      "is_delayed_trigger": true,
+      "evidence_ids": [
+        {
+          "horizon": 72,
+          "event_id": 6
+        },
+        {
+          "horizon": 168,
+          "event_id": 6
+        }
+      ],
+      "reason": "new env_vars_read: OPENAI_API_KEY first observed at +72h"
+    },
+    {
+      "category": "files_read",
+      "item": "<PROJECT>/.env",
+      "change": "new",
+      "rule": "file_read_sensitive",
+      "severity": "HIGH",
+      "base_points": 35,
+      "multiplier": 1.5,
+      "points": 52.5,
+      "first_seen_hour": 72,
+      "seen_at_hours": [
+        72,
+        168
+      ],
+      "is_delayed_trigger": true,
+      "evidence_ids": [
+        {
+          "horizon": 72,
+          "event_id": 8
+        },
+        {
+          "horizon": 168,
+          "event_id": 8
+        }
+      ],
+      "reason": "new files_read: <PROJECT>/.env first observed at +72h"
+    },
+    {
+      "category": "network_hosts",
+      "item": "93.184.216.34",
+      "change": "new",
+      "rule": "network_host",
+      "severity": "HIGH",
+      "base_points": 40,
+      "multiplier": 1.5,
+      "points": 60.0,
+      "first_seen_hour": 72,
+      "seen_at_hours": [
+        72,
+        168
+      ],
+      "is_delayed_trigger": true,
+      "evidence_ids": [
+        {
+          "horizon": 72,
+          "event_id": 11
+        },
+        {
+          "horizon": 168,
+          "event_id": 11
+        }
+      ],
+      "reason": "new network_hosts: 93.184.216.34 first observed at +72h"
+    },
+    {
+      "category": "canary_evidence",
+      "item": "OPENAI_API_KEY",
+      "change": "new",
+      "rule": "canary_network_attempt",
+      "severity": "CRITICAL",
+      "base_points": 80,
+      "multiplier": 1.5,
+      "points": 120.0,
+      "first_seen_hour": 72,
+      "seen_at_hours": [
+        72,
+        168
+      ],
+      "is_delayed_trigger": true,
+      "evidence_ids": [
+        {
+          "horizon": 72,
+          "event_id": 11
+        },
+        {
+          "horizon": 168,
+          "event_id": 11
+        }
+      ],
+      "reason": "Attempted outbound canary request for OPENAI_API_KEY (blocked); transmission unconfirmed",
+      "channel": "network_attempt",
+      "action_stage": "prepared_request",
+      "status": "blocked"
+    }
+  ],
+  "candidate_capabilities": {
+    "files_read": [
+      "<PROJECT>/.env",
+      "<PROJECT>/demo_config.json"
+    ],
+    "files_written": [],
+    "env_vars_read": [
+      "APP_TIMEZONE",
+      "AWS_SECRET_ACCESS_KEY",
+      "OPENAI_API_KEY",
+      "REQUEST_METHOD",
+      "SSLKEYLOGFILE"
+    ],
+    "network_hosts": [
+      "93.184.216.34"
+    ],
+    "processes_spawned": [],
+    "native_libs_loaded": []
+  },
+  "horizon_breakdown": {
+    "0": {
+      "findings": [],
+      "new_findings": [],
+      "risk_score": 0,
+      "activity": {
+        "files_read": [
+          "<PROJECT>/demo_config.json"
+        ],
+        "files_written": [],
+        "env_vars_read": [
+          "APP_TIMEZONE"
+        ],
+        "network_attempts": [],
+        "processes_spawned": [],
+        "native_libs_loaded": [],
+        "sleeps_skipped": {
+          "count": 0,
+          "total_sec": 0
+        },
+        "canary_evidence": [],
+        "observed_canaries": []
+      }
+    },
+    "24": {
+      "findings": [],
+      "new_findings": [],
+      "risk_score": 0,
+      "activity": {
+        "files_read": [
+          "<PROJECT>/demo_config.json"
+        ],
+        "files_written": [],
+        "env_vars_read": [
+          "APP_TIMEZONE"
+        ],
+        "network_attempts": [],
+        "processes_spawned": [],
+        "native_libs_loaded": [],
+        "sleeps_skipped": {
+          "count": 0,
+          "total_sec": 0
+        },
+        "canary_evidence": [],
+        "observed_canaries": []
+      }
+    },
+    "72": {
+      "findings": [
+        {
+          "category": "env_vars_read",
+          "item": "AWS_SECRET_ACCESS_KEY",
+          "change": "new",
+          "rule": "env_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 25,
+          "multiplier": 1.5,
+          "points": 37.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 7
+            },
+            {
+              "horizon": 168,
+              "event_id": 7
+            }
+          ],
+          "reason": "new env_vars_read: AWS_SECRET_ACCESS_KEY first observed at +72h"
+        },
+        {
+          "category": "env_vars_read",
+          "item": "OPENAI_API_KEY",
+          "change": "new",
+          "rule": "env_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 25,
+          "multiplier": 1.5,
+          "points": 37.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 6
+            },
+            {
+              "horizon": 168,
+              "event_id": 6
+            }
+          ],
+          "reason": "new env_vars_read: OPENAI_API_KEY first observed at +72h"
+        },
+        {
+          "category": "files_read",
+          "item": "<PROJECT>/.env",
+          "change": "new",
+          "rule": "file_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 35,
+          "multiplier": 1.5,
+          "points": 52.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 8
+            },
+            {
+              "horizon": 168,
+              "event_id": 8
+            }
+          ],
+          "reason": "new files_read: <PROJECT>/.env first observed at +72h"
+        },
+        {
+          "category": "network_hosts",
+          "item": "93.184.216.34",
+          "change": "new",
+          "rule": "network_host",
+          "severity": "HIGH",
+          "base_points": 40,
+          "multiplier": 1.5,
+          "points": 60.0,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 11
+            },
+            {
+              "horizon": 168,
+              "event_id": 11
+            }
+          ],
+          "reason": "new network_hosts: 93.184.216.34 first observed at +72h"
+        },
+        {
+          "category": "canary_evidence",
+          "item": "OPENAI_API_KEY",
+          "change": "new",
+          "rule": "canary_network_attempt",
+          "severity": "CRITICAL",
+          "base_points": 80,
+          "multiplier": 1.5,
+          "points": 120.0,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 11
+            },
+            {
+              "horizon": 168,
+              "event_id": 11
+            }
+          ],
+          "reason": "Attempted outbound canary request for OPENAI_API_KEY (blocked); transmission unconfirmed",
+          "channel": "network_attempt",
+          "action_stage": "prepared_request",
+          "status": "blocked"
+        }
+      ],
+      "new_findings": [
+        {
+          "category": "env_vars_read",
+          "item": "AWS_SECRET_ACCESS_KEY",
+          "change": "new",
+          "rule": "env_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 25,
+          "multiplier": 1.5,
+          "points": 37.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 7
+            },
+            {
+              "horizon": 168,
+              "event_id": 7
+            }
+          ],
+          "reason": "new env_vars_read: AWS_SECRET_ACCESS_KEY first observed at +72h"
+        },
+        {
+          "category": "env_vars_read",
+          "item": "OPENAI_API_KEY",
+          "change": "new",
+          "rule": "env_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 25,
+          "multiplier": 1.5,
+          "points": 37.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 6
+            },
+            {
+              "horizon": 168,
+              "event_id": 6
+            }
+          ],
+          "reason": "new env_vars_read: OPENAI_API_KEY first observed at +72h"
+        },
+        {
+          "category": "files_read",
+          "item": "<PROJECT>/.env",
+          "change": "new",
+          "rule": "file_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 35,
+          "multiplier": 1.5,
+          "points": 52.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 8
+            },
+            {
+              "horizon": 168,
+              "event_id": 8
+            }
+          ],
+          "reason": "new files_read: <PROJECT>/.env first observed at +72h"
+        },
+        {
+          "category": "network_hosts",
+          "item": "93.184.216.34",
+          "change": "new",
+          "rule": "network_host",
+          "severity": "HIGH",
+          "base_points": 40,
+          "multiplier": 1.5,
+          "points": 60.0,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 11
+            },
+            {
+              "horizon": 168,
+              "event_id": 11
+            }
+          ],
+          "reason": "new network_hosts: 93.184.216.34 first observed at +72h"
+        },
+        {
+          "category": "canary_evidence",
+          "item": "OPENAI_API_KEY",
+          "change": "new",
+          "rule": "canary_network_attempt",
+          "severity": "CRITICAL",
+          "base_points": 80,
+          "multiplier": 1.5,
+          "points": 120.0,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 11
+            },
+            {
+              "horizon": 168,
+              "event_id": 11
+            }
+          ],
+          "reason": "Attempted outbound canary request for OPENAI_API_KEY (blocked); transmission unconfirmed",
+          "channel": "network_attempt",
+          "action_stage": "prepared_request",
+          "status": "blocked"
+        }
+      ],
+      "risk_score": 100.0,
+      "activity": {
+        "files_read": [
+          "<PROJECT>/.env",
+          "<PROJECT>/demo_config.json"
+        ],
+        "files_written": [],
+        "env_vars_read": [
+          "APP_TIMEZONE",
+          "AWS_SECRET_ACCESS_KEY",
+          "OPENAI_API_KEY",
+          "REQUEST_METHOD",
+          "SSLKEYLOGFILE"
+        ],
+        "network_attempts": [
+          {
+            "target": "93.184.216.34",
+            "blocked": true
+          }
+        ],
+        "processes_spawned": [],
+        "native_libs_loaded": [],
+        "sleeps_skipped": {
+          "count": 0,
+          "total_sec": 0
+        },
+        "canary_evidence": [
+          {
+            "name": "OPENAI_API_KEY",
+            "channel": "environment_read",
+            "stage": "read",
+            "event_id": 6,
+            "status": "unknown",
+            "horizon": 72
+          },
+          {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "channel": "environment_read",
+            "stage": "read",
+            "event_id": 7,
+            "status": "unknown",
+            "horizon": 72
+          },
+          {
+            "name": "OPENAI_API_KEY",
+            "channel": "network_attempt",
+            "stage": "prepared_request",
+            "event_id": 11,
+            "status": "blocked",
+            "hook_status": "blocked",
+            "os_status": "unknown",
+            "blocker": "WakeTrace hook",
+            "horizon": 72
+          }
+        ],
+        "observed_canaries": [
+          "AWS_SECRET_ACCESS_KEY",
+          "OPENAI_API_KEY"
+        ]
+      }
+    },
+    "168": {
+      "findings": [
+        {
+          "category": "env_vars_read",
+          "item": "AWS_SECRET_ACCESS_KEY",
+          "change": "new",
+          "rule": "env_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 25,
+          "multiplier": 1.5,
+          "points": 37.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 7
+            },
+            {
+              "horizon": 168,
+              "event_id": 7
+            }
+          ],
+          "reason": "new env_vars_read: AWS_SECRET_ACCESS_KEY first observed at +72h"
+        },
+        {
+          "category": "env_vars_read",
+          "item": "OPENAI_API_KEY",
+          "change": "new",
+          "rule": "env_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 25,
+          "multiplier": 1.5,
+          "points": 37.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 6
+            },
+            {
+              "horizon": 168,
+              "event_id": 6
+            }
+          ],
+          "reason": "new env_vars_read: OPENAI_API_KEY first observed at +72h"
+        },
+        {
+          "category": "files_read",
+          "item": "<PROJECT>/.env",
+          "change": "new",
+          "rule": "file_read_sensitive",
+          "severity": "HIGH",
+          "base_points": 35,
+          "multiplier": 1.5,
+          "points": 52.5,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 8
+            },
+            {
+              "horizon": 168,
+              "event_id": 8
+            }
+          ],
+          "reason": "new files_read: <PROJECT>/.env first observed at +72h"
+        },
+        {
+          "category": "network_hosts",
+          "item": "93.184.216.34",
+          "change": "new",
+          "rule": "network_host",
+          "severity": "HIGH",
+          "base_points": 40,
+          "multiplier": 1.5,
+          "points": 60.0,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 11
+            },
+            {
+              "horizon": 168,
+              "event_id": 11
+            }
+          ],
+          "reason": "new network_hosts: 93.184.216.34 first observed at +72h"
+        },
+        {
+          "category": "canary_evidence",
+          "item": "OPENAI_API_KEY",
+          "change": "new",
+          "rule": "canary_network_attempt",
+          "severity": "CRITICAL",
+          "base_points": 80,
+          "multiplier": 1.5,
+          "points": 120.0,
+          "first_seen_hour": 72,
+          "seen_at_hours": [
+            72,
+            168
+          ],
+          "is_delayed_trigger": true,
+          "evidence_ids": [
+            {
+              "horizon": 72,
+              "event_id": 11
+            },
+            {
+              "horizon": 168,
+              "event_id": 11
+            }
+          ],
+          "reason": "Attempted outbound canary request for OPENAI_API_KEY (blocked); transmission unconfirmed",
+          "channel": "network_attempt",
+          "action_stage": "prepared_request",
+          "status": "blocked"
+        }
+      ],
+      "new_findings": [],
+      "risk_score": 100.0,
+      "activity": {
+        "files_read": [
+          "<PROJECT>/.env",
+          "<PROJECT>/demo_config.json"
+        ],
+        "files_written": [],
+        "env_vars_read": [
+          "APP_TIMEZONE",
+          "AWS_SECRET_ACCESS_KEY",
+          "OPENAI_API_KEY",
+          "REQUEST_METHOD",
+          "SSLKEYLOGFILE"
+        ],
+        "network_attempts": [
+          {
+            "target": "93.184.216.34",
+            "blocked": true
+          }
+        ],
+        "processes_spawned": [],
+        "native_libs_loaded": [],
+        "sleeps_skipped": {
+          "count": 0,
+          "total_sec": 0
+        },
+        "canary_evidence": [
+          {
+            "name": "OPENAI_API_KEY",
+            "channel": "environment_read",
+            "stage": "read",
+            "event_id": 6,
+            "status": "unknown",
+            "horizon": 168
+          },
+          {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "channel": "environment_read",
+            "stage": "read",
+            "event_id": 7,
+            "status": "unknown",
+            "horizon": 168
+          },
+          {
+            "name": "OPENAI_API_KEY",
+            "channel": "network_attempt",
+            "stage": "prepared_request",
+            "event_id": 11,
+            "status": "blocked",
+            "hook_status": "blocked",
+            "os_status": "unknown",
+            "blocker": "WakeTrace hook",
+            "horizon": 168
+          }
+        ],
+        "observed_canaries": [
+          "AWS_SECRET_ACCESS_KEY",
+          "OPENAI_API_KEY"
+        ]
+      }
+    }
+  },
+  "raw_score": 307.5,
+  "risk_score": 100.0,
+  "passed": false,
+  "verdict": "BLOCKED",
+  "comparability_issues": [],
+  "policy": {
+    "block_threshold": 40.0,
+    "weights": {
+      "file_read_normal": 5,
+      "file_read_sensitive": 35,
+      "file_write_normal": 15,
+      "file_write_sensitive": 45,
+      "env_read_normal": 2,
+      "env_read_sensitive": 25,
+      "network_host": 40,
+      "process_spawn": 40,
+      "native_lib": 25,
+      "canary_stdout": 10,
+      "canary_stderr": 10,
+      "canary_written_file": 25,
+      "canary_process_argument": 45,
+      "canary_network_attempt": 80,
+      "timing_shift": 35
+    },
+    "sensitive_env_patterns": [
+      "SECRET",
+      "TOKEN",
+      "PASSWORD",
+      "API_KEY",
+      "CREDENTIAL",
+      "DATABASE_URL",
+      "AUTH"
+    ],
+    "sensitive_file_patterns": [
+      ".env",
+      ".ssh",
+      "id_rsa",
+      "id_ed25519",
+      ".aws",
+      "credentials",
+      ".npmrc",
+      ".pypirc",
+      ".gitconfig",
+      "/etc/shadow",
+      ".kube"
+    ]
+  }
+}

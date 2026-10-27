@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.1",
+  "target_script": "sample-1.0-py3-none-any.whl",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "horizons_locked": [
+    0
+  ],
+  "capabilities": {
+    "files_read": [],
+    "files_written": [],
+    "env_vars_read": [],
+    "network_hosts": [],
+    "processes_spawned": [],
+    "native_libs_loaded": []
+  },
+  "artifact": {
+    "name": "sample",
+    "version": "1.0",
+    "kind": "wheel",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "setup": {
+    "python": "3.14.7",
+    "target": {
+      "name": "sample",
+      "version": "1.0"
+    },
+    "dependencies": [],
+    "build_result": "installed"
+  },
+  "exercise": {
+    "mode": "import",
+    "module": "sample",
+    "entry": null,
+    "argv": null,
+    "args": [],
+    "env": {},
+    "distribution": "sample"
+  },
+  "wheelhouse": {
+    "source": null,
+    "wheels": []
+  },
+  "file_age_hours": 0
+}

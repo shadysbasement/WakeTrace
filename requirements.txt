@@ -1,0 +1,2 @@
+-c constraints-release.txt
+-e .[dashboard,test]

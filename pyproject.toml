@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=80,<82", "wheel>=0.45,<0.47"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "waketrace"
+version = "0.9.0"
+description = "Contained behavioral comparison across virtual time horizons"
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+dependencies = ["rich>=14,<16"]
+
+[project.optional-dependencies]
+dashboard = ["streamlit>=1.50,<2"]
+test = ["pytest>=8,<10", "build>=1,<2", "pyyaml>=6,<7"]
+
+[project.scripts]
+waketrace = "main:main"
+waketrace-dashboard = "dashboard_cli:main"
+
+[tool.setuptools]
+py-modules = ["main", "runner", "package_runner", "package_input", "isolation", "lockfile", "differ", "schema", "dashboard", "dashboard_cli", "dashboard_data", "dashboard_export", "gate", "gate_plan", "gate_prepare", "gate_schema", "gate_static", "observer"]
+packages = ["sandbox_hooks", "demo_pkgs"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+demo_pkgs = ["*.json"]

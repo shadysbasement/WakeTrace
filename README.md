@@ -1,4 +1,4 @@
-![WakeTrace banner](docs/assets/waketrace-banner.svg)
+[![WakeTrace wordmark banner](docs/assets/waketrace-banner.svg)](docs/assets/waketrace-banner.svg)
 
 # WakeTrace
 
@@ -11,6 +11,18 @@ WakeTrace lets me run a copy of a Python script or package at different simulate
 Say I trust version one of a package and want to check version two. I make a behavior lock from version one, then run version two at `0`, `24`, and `72` hours. If it starts reading a secret, opening a file, launching a process, or attempting a network request only at hour `72`, I want to see that difference in the report instead of guessing from the source code.
 
 WakeTrace runs the copy inside a Bubblewrap sandbox. It also gives the run fake secrets, called canaries, so the report can show if one was read or used. Package installation and the package exercise happen inside containment too.
+
+## Install it locally
+
+Create a Python 3.14 virtual environment, then install the pinned project dependencies:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/waketrace preflight
+```
+
+The install adds `waketrace` for the CLI and `waketrace-dashboard` for the Streamlit dashboard. Run `demo` before opening the dashboard so it has a report to show. The [user manual](USER_MANUAL.md) has the full setup and a classroom walkthrough.
 
 ## Try the demo
 
@@ -26,6 +38,32 @@ You'll need Linux, Python 3.14 at `/usr/bin/python3`, Bubblewrap (`bwrap`), and 
 This is a screenshot from an actual demo run. It stays clean at `0` and `24` hours, then catches the new behavior at `72` hours:
 
 [![WakeTrace demo terminal output](docs/assets/demo-terminal.png)](docs/assets/demo-terminal.png)
+
+## Look through the dashboard
+
+After running the demo, I open the dashboard in a second terminal:
+
+```bash
+.venv/bin/python -m streamlit run dashboard.py
+```
+
+The Overview gives me the result at a glance. In this run, the first risky behavior shows up at `+72h`, and the chart goes from `0` to `100` at that tested hour:
+
+[![WakeTrace dashboard overview showing a blocked result and risk across tested hours](docs/assets/dashboard-overview.png)](docs/assets/dashboard-overview.png)
+
+On Investigation, I can pick a tested hour and see what actually happened there. At `+72h`, the new environment reads, `.env` access, and network attempt appear together:
+
+[![WakeTrace investigation page showing new findings at plus 72 hours](docs/assets/dashboard-investigation.png)](docs/assets/dashboard-investigation.png)
+
+I can also open a finding and follow it back to the recorded events. This is useful when I want to see the evidence behind a warning instead of only reading the final score:
+
+[![WakeTrace finding evidence linked to recorded events](docs/assets/dashboard-finding.png)](docs/assets/dashboard-finding.png)
+
+The Compare page puts the trusted baseline next to the candidate, so I can see which capabilities were added:
+
+[![WakeTrace dashboard comparing trusted and candidate capabilities](docs/assets/dashboard-compare.png)](docs/assets/dashboard-compare.png)
+
+These screenshots are from the included **synthetic** demo. The dashboard reads the saved report when I change pages or hours; it doesn't run the target again unless I use the **Run a check** button.
 
 If you want to see every command before using your own files:
 
@@ -57,10 +95,11 @@ There's also a local admission gate for a stricter check. It takes a plan, a sig
 With `pytest` installed in a working Python 3.14 `.venv`, and `strace` on your `PATH`:
 
 ```bash
-PATH="$PWD/.venv/bin:$PATH" .venv/bin/python -m pytest -q tests/test_1.py tests/test_2.py tests/test_3.py tests/test_4.py tests/test_5.py tests/test_6.py tests/test_7.py tests/test_10.py
+.venv/bin/python -m pytest -q tests
+.venv/bin/python tests/release_smoke.py
 ```
 
-These tests use small scripts and packages written for WakeTrace. They cover the clock hook, containment, behavior locks, package setup, CLI, and admission gate.
+These tests use small scripts and packages written for WakeTrace. They cover the clock hook, containment, behavior locks, package setup, CLI, dashboard, and admission gate. The release smoke test builds a wheel and source archive, then checks fresh installs in temporary directories.
 
 ## If you're looking through the code
 

@@ -1,0 +1,115 @@
+name: WakeTrace reusable admission gate
+
+on:
+  workflow_call:
+    inputs:
+      engine_repository:
+        required: true
+        type: string
+      engine_sha:
+        required: true
+        type: string
+      candidate_sha:
+        required: true
+        type: string
+      trusted_sha:
+        required: true
+        type: string
+      candidate_path:
+        required: true
+        type: string
+      template_path:
+        required: true
+        type: string
+      approval_key_path:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  admission:
+    name: WakeTrace admission / Ubuntu 26.04 / Python 3.14
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Require immutable refs
+        shell: bash
+        env:
+          ENGINE_SHA: ${{ inputs.engine_sha }}
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+          TRUSTED_SHA: ${{ inputs.trusted_sha }}
+        run: |
+          for ref in "$ENGINE_SHA" "$CANDIDATE_SHA" "$TRUSTED_SHA"; do
+            [[ "$ref" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          done
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: ${{ inputs.engine_repository }}
+          ref: ${{ inputs.engine_sha }}
+          path: engine
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ inputs.candidate_sha }}
+          path: candidate
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ inputs.trusted_sha }}
+          path: trusted
+          persist-credentials: false
+      - name: Supported runtime and observer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap strace python3-venv
+          python3 -c 'import sys,platform; assert sys.version_info[:2] == (3,14); assert platform.machine() == "x86_64"'
+          /usr/bin/python3 -c 'import sys; assert sys.version_info[:2] == (3,14)'
+      - name: Build and install exact engine checkout
+        run: |
+          python3 -m venv /tmp/waketrace-admission
+          /tmp/waketrace-admission/bin/python -m pip install -c engine/constraints-release.txt 'build>=1,<2' 'setuptools>=80,<82' 'wheel>=0.45,<0.47'
+          /tmp/waketrace-admission/bin/python -m build --wheel --outdir /tmp/waketrace-dist engine
+          /tmp/waketrace-admission/bin/python -m pip install /tmp/waketrace-dist/waketrace-*.whl
+          cd /tmp
+          /tmp/waketrace-admission/bin/waketrace preflight
+          /tmp/waketrace-admission/bin/python -c 'from observer import preflight; preflight()'
+      - name: Prepare plan from protected checkout
+        env:
+          TEMPLATE_PATH: ${{ inputs.template_path }}
+          CANDIDATE_PATH: ${{ inputs.candidate_path }}
+        run: |
+          mkdir -p output
+          cd /tmp
+          /tmp/waketrace-admission/bin/python -m gate_prepare \
+            --template "$TEMPLATE_PATH" \
+            --trusted-root "$GITHUB_WORKSPACE/trusted" \
+            --candidate-root "$GITHUB_WORKSPACE/candidate" \
+            --candidate-path "$CANDIDATE_PATH" \
+            --output-root "$GITHUB_WORKSPACE/output"
+      - name: Required admission decision
+        env:
+          APPROVAL_KEY_PATH: ${{ inputs.approval_key_path }}
+        run: |
+          unset PYTHONPATH
+          cd /tmp
+          /tmp/waketrace-admission/bin/waketrace gate \
+            "$GITHUB_WORKSPACE/output/gate-plan.json" \
+            --input-root "$GITHUB_WORKSPACE" \
+            --output-root "$GITHUB_WORKSPACE/output" \
+            --approval-key "$GITHUB_WORKSPACE/trusted/$APPROVAL_KEY_PATH"
+      - name: Publish redacted review summary
+        if: always()
+        run: |
+          test -s output/gate-summary.md
+          cat output/gate-summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: waketrace-admission-report
+          path: |
+            output/gate-result.json
+            output/gate-error.json
+            output/gate-summary.md
+          if-no-files-found: error
+          retention-days: 14

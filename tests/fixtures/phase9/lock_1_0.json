@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "target_script": "sample.py",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "horizons_locked": [
+    0
+  ],
+  "capabilities": {
+    "files_read": [],
+    "files_written": [],
+    "env_vars_read": [],
+    "network_hosts": [],
+    "processes_spawned": [],
+    "native_libs_loaded": []
+  }
+}

@@ -1,0 +1,93 @@
+name: WakeTrace release gate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-schema-dashboard:
+    name: Unit, schema, dashboard / ${{ matrix.os }} / CPython ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-26.04
+            python: '3.14'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: System setup
+        run: sudo apt-get update && sudo apt-get install -y bubblewrap strace python3-venv
+      - name: Check exact runtimes
+        run: |
+          python3 -c 'import sys; assert sys.version_info[:2] == (3, 14)'
+          /usr/bin/python3 -c 'import sys; assert sys.version_info[:2] == (3, 14)'
+          test "$(uname -m)" = x86_64
+      - name: Install test dependencies
+        run: |
+          python3 -m venv /tmp/waketrace-ci
+          /tmp/waketrace-ci/bin/python -m pip install -r requirements.txt
+      - name: Unit and saved schema fixtures
+        run: /tmp/waketrace-ci/bin/python -m pytest -q tests/test_9_unit.py
+      - name: Dashboard application smoke
+        run: /tmp/waketrace-ci/bin/python -m pytest -q tests/test_8.py
+
+  containment:
+    name: Real sandbox, adversarial, complete suite / ${{ matrix.os }} / CPython ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-26.04
+            python: '3.14'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: System setup
+        run: sudo apt-get update && sudo apt-get install -y bubblewrap strace python3-venv
+      - name: Check exact runtimes
+        run: |
+          python3 -c 'import sys; assert sys.version_info[:2] == (3, 14)'
+          /usr/bin/python3 -c 'import sys; assert sys.version_info[:2] == (3, 14)'
+          test "$(uname -m)" = x86_64
+      - name: Install test dependencies
+        run: |
+          python3 -m venv /tmp/waketrace-ci
+          /tmp/waketrace-ci/bin/python -m pip install -r requirements.txt
+      - name: Required unprivileged isolation preflight
+        run: /tmp/waketrace-ci/bin/waketrace preflight
+      - name: Adversarial containment and cleanup
+        run: /tmp/waketrace-ci/bin/python -m pytest -q tests/test_5.py tests/test_9_integration.py
+      - name: Full WakeTrace suite
+        run: /tmp/waketrace-ci/bin/python -m pytest -q tests
+
+  installed-release:
+    name: Fresh wheel, sdist, CLI and dashboard / ${{ matrix.os }} / CPython ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-26.04
+            python: '3.14'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: System setup
+        run: sudo apt-get update && sudo apt-get install -y bubblewrap strace python3-venv
+      - name: Check exact runtimes
+        run: |
+          python3 -c 'import sys; assert sys.version_info[:2] == (3, 14)'
+          /usr/bin/python3 -c 'import sys; assert sys.version_info[:2] == (3, 14)'
+          test "$(uname -m)" = x86_64
+      - name: Install build dependencies
+        run: |
+          python3 -m venv /tmp/waketrace-build
+          /tmp/waketrace-build/bin/python -m pip install -c constraints-release.txt 'build>=1,<2' 'setuptools>=80,<82' 'wheel>=0.45,<0.47'
+      - name: Required unprivileged isolation preflight
+        run: /tmp/waketrace-build/bin/python main.py preflight
+      - name: Build and test fresh installs outside checkout
+        run: /tmp/waketrace-build/bin/python tests/release_smoke.py
