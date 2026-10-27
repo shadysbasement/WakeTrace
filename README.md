@@ -115,6 +115,6 @@ It means WakeTrace didn't see a concerning difference in the paths and times it 
 
 ## AI help
 
-I used ChatGPT/Codex while building this, including planning, debugging, reviewing code and tests, and writing parts of the documentation. This README was edited with AI help too. I'm saying that openly because the useful thing here is whether the code and demo work, not pretending I did every line alone.
+I used Codex while building this, for debugging(just finding the bugs), reviewing code and tests, and refining parts of the documentation. I'm saying that openly because the useful thing here is whether the code and demo work, not pretending I did everything all on my own.
 
 The [standalone WakeTrace logo](docs/assets/waketrace-logo.svg) is here too if you want to use it outside the README.
