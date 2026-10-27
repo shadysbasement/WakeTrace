@@ -115,6 +115,12 @@ def _base_command(bwrap, work=None, trace=None, hook=None, write_limit_mb=32):
     cache = Path("/etc/ld.so.cache")
     if cache.is_file():
         cmd += ["--ro-bind", str(cache), str(cache)]
+    # Ubuntu's ensurepip uses a system CA bundle even for an offline install.
+    # Expose only that public file, not the rest of /etc/ssl.
+    ca_bundle = Path("/etc/ssl/certs/ca-certificates.crt")
+    if ca_bundle.is_file():
+        cmd += ["--dir", "/etc/ssl", "--dir", "/etc/ssl/certs",
+                "--ro-bind", str(ca_bundle), str(ca_bundle)]
     if work is not None:
         cmd += ["--ro-bind", str(work), "/input", "--size",
                 str(write_limit_mb * 1024 * 1024), "--tmpfs", "/work",
