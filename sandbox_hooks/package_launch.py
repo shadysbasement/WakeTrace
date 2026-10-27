@@ -35,6 +35,8 @@ def run(command, env, timeout):
                                                            "PermissionError:"))), None)
             if diagnostic:
                 detail += ": " + diagnostic[:240]
+            elif output.strip():
+                detail += ": " + " ".join(output.split())[-300:]
         raise RuntimeError(detail)
     return result
 
