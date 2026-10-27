@@ -97,8 +97,16 @@ def _base_command(bwrap, work=None, trace=None, hook=None, write_limit_mb=32):
         bwrap, "--unshare-user", "--unshare-pid", "--unshare-net",
         "--unshare-ipc", "--unshare-uts", "--die-with-parent",
         "--new-session", "--clearenv", "--ro-bind", "/usr", "/usr",
-        "--symlink", "usr/bin", "/bin", "--symlink", "usr/lib", "/lib",
-        "--symlink", "usr/lib", "/lib64", "--dir", "/etc",
+    ]
+    # The ELF loader can live under /usr/lib64 (Ubuntu) or /usr/lib (Arch).
+    # Recreate the host's runtime layout instead of guessing where /lib64 points.
+    for path in (Path("/bin"), Path("/sbin"), Path("/lib"), Path("/lib64")):
+        if path.is_symlink():
+            cmd += ["--symlink", os.readlink(path), str(path)]
+        elif path.is_dir():
+            cmd += ["--ro-bind", str(path), str(path)]
+    cmd += [
+        "--dir", "/etc",
         "--dev", "/dev", "--proc", "/proc", "--size",
         str(write_limit_mb * 1024 * 1024), "--tmpfs", "/tmp",
         "--setenv", "PATH", "/usr/bin:/bin", "--setenv", "HOME", "/nonexistent",

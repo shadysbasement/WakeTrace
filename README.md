@@ -2,75 +2,78 @@
 
 # WakeTrace
 
-I started WakeTrace because I kept thinking about a script that behaves normally when you first run it, then does something completely different a few days later. If I have to wait three days to find out, I've already missed the point.
+I started WakeTrace cuz the whole idea of a time bomb script bothered me. A script can look completely fine when I run it now, then wait a few days and do something else. I wanted to catch that *before* the few days actually pass.
 
-WakeTrace lets me run a copy of a Python script or package at different simulated times. It records what happened, compares that behavior with a baseline I chose, and shows me *when* something new appeared. The example in this repo is a small time bomb made for testing; it doesn't need a real secret or a real network connection.
+So I made WakeTrace. I give it a Python script or package I trust, then a version I wanna check. It runs copies at different simulated times, records what they do, and shows me *when* the behavior changes. The example in this repo is fake on purpose, so you don't need a real secret or a real network connection to try it.
 
 ## The idea
 
-Say I trust version one of a package and want to check version two. I make a behavior lock from version one, then run version two at `0`, `24`, and `72` hours. If it starts reading a secret, opening a file, launching a process, or attempting a network request only at hour `72`, I want to see that difference in the report instead of guessing from the source code.
+Say I trust version one of a package and wanna check version two. I make a behavior lock from version one, then run version two at `0`, `24`, and `72` hours. If it only starts reading a secret, opening a file, launching a process, or trying the network at hour `72`, the report should show me that. I shouldn't have to guess from the source code or actually wait three days.
 
-WakeTrace runs the copy inside a Bubblewrap sandbox. It also gives the run fake secrets, called canaries, so the report can show if one was read or used. Package installation and the package exercise happen inside containment too.
+WakeTrace puts each copy inside a Bubblewrap sandbox. It also gives the run fake secrets called canaries, so I can see if one was read or used. Package installation and the package exercise stay inside containment too.
 
-## Install it locally
+## Wanna see it work?
 
-Create a Python 3.14 virtual environment, then install the pinned project dependencies:
+You'll need Linux x86_64, Python 3.14 at `/usr/bin/python3`, Bubblewrap (`bwrap`), and working unprivileged user namespaces. The admission gate also needs `strace` and OpenSSL. To get the project running:
 
 ```bash
+git clone https://github.com/shadysbasement/WakeTrace.git
+cd WakeTrace
 python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip install '.[dashboard]'
 .venv/bin/waketrace preflight
+.venv/bin/waketrace demo
 ```
 
-The install adds `waketrace` for the CLI and `waketrace-dashboard` for the Streamlit dashboard. Run `demo` before opening the dashboard so it has a report to show. The [user manual](USER_MANUAL.md) has the full setup and a classroom walkthrough.
+If `preflight` fails, the sandbox can't run on that machine yet. WakeTrace stops there instead of running the script without containment. The install adds `waketrace` for the CLI and `waketrace-dashboard` for the dashboard.
 
 ## Try the demo
 
-You'll need Linux, Python 3.14 at `/usr/bin/python3`, Bubblewrap (`bwrap`), and working unprivileged user namespaces. From the WakeTrace folder, run:
+From the WakeTrace folder, you can run the demo again with:
 
 ```bash
-.venv/bin/python main.py preflight
-.venv/bin/python main.py demo
+.venv/bin/waketrace preflight
+.venv/bin/waketrace demo
 ```
 
-`preflight` checks that the sandbox can start. `demo` compares the included clean script with the delayed one. It writes `behavior.lock.json` and `reports/latest_report.json` in the folder you ran it from. Open the report and look at the findings for each hour; the interesting part is when the new behavior first shows up.
+`demo` compares the included clean script with one that waits before changing its behavior. It writes `behavior.lock.json` and `reports/latest_report.json` in the folder you ran it from. Look at the findings by hour; the interesting bit is when the new behavior first shows up.
 
-This is a screenshot from an actual demo run. It stays clean at `0` and `24` hours, then catches the new behavior at `72` hours:
+Here's an actual demo run. It stays clean at `0` and `24` hours, then catches the new behavior at `72` hours:
 
 [![WakeTrace demo terminal output](docs/assets/demo-terminal.png)](docs/assets/demo-terminal.png)
 
 ## Look through the dashboard
 
-After running the demo, I open the dashboard in a second terminal:
+After the demo, I open the dashboard in a second terminal:
 
 ```bash
-.venv/bin/python -m streamlit run dashboard.py
+.venv/bin/waketrace-dashboard
 ```
 
-The Overview gives me the result at a glance. In this run, the first risky behavior shows up at `+72h`, and the chart goes from `0` to `100` at that tested hour:
+The Overview shows me the result straight away. In this run, nothing risky shows up until `+72h`, then the chart jumps from `0` to `100`:
 
 [![WakeTrace dashboard overview showing a blocked result and risk across tested hours](docs/assets/dashboard-overview.png)](docs/assets/dashboard-overview.png)
 
-On Investigation, I can pick a tested hour and see what actually happened there. At `+72h`, the new environment reads, `.env` access, and network attempt appear together:
+On Investigation, I can pick an hour and see what actually happened. At `+72h`, the new environment reads, `.env` access, and network attempt show up together:
 
 [![WakeTrace investigation page showing new findings at plus 72 hours](docs/assets/dashboard-investigation.png)](docs/assets/dashboard-investigation.png)
 
-I can also open a finding and follow it back to the recorded events. This is useful when I want to see the evidence behind a warning instead of only reading the final score:
+I can open a finding and follow it back to the recorded events. I wanted that because a warning without the evidence behind it isn't very helpful:
 
 [![WakeTrace finding evidence linked to recorded events](docs/assets/dashboard-finding.png)](docs/assets/dashboard-finding.png)
 
-The Compare page puts the trusted baseline next to the candidate, so I can see which capabilities were added:
+Compare puts the trusted baseline next to the candidate so I can see what it added:
 
 [![WakeTrace dashboard comparing trusted and candidate capabilities](docs/assets/dashboard-compare.png)](docs/assets/dashboard-compare.png)
 
-These screenshots are from the included **synthetic** demo. The dashboard reads the saved report when I change pages or hours; it doesn't run the target again unless I use the **Run a check** button.
+All these screenshots are from the included **fake** demo. Changing pages or hours just reads the saved report. It only runs the target again if I press **Run a check**.
 
 If you want to see every command before using your own files:
 
 ```bash
-.venv/bin/python main.py --help
-.venv/bin/python main.py lock --help
-.venv/bin/python main.py verify --help
+.venv/bin/waketrace --help
+.venv/bin/waketrace lock --help
+.venv/bin/waketrace verify --help
 ```
 
 Here's what the main command list looks like:
@@ -79,34 +82,39 @@ Here's what the main command list looks like:
 
 ## Check your own script
 
-Start with a baseline you have actually reviewed and decided to trust:
+Start with a baseline you've actually reviewed and decided to trust:
 
 ```bash
-.venv/bin/python main.py lock path/to/baseline.py -o baseline.lock.json --horizons 0,24,72
-.venv/bin/python main.py verify path/to/candidate.py -b baseline.lock.json -r report.json --horizons 0,24,72
+.venv/bin/waketrace lock path/to/baseline.py -o baseline.lock.json --horizons 0,24,72
+.venv/bin/waketrace verify path/to/candidate.py -b baseline.lock.json -r report.json --horizons 0,24,72
 ```
 
-The lock records the baseline's identity and what it did at those hours. The verify command saves a report with the candidate's findings, evidence, risk score, and verdict. WakeTrace can also work with wheels, source archives, and source directories; for those, use `--exercise` to say whether it should import a module, run a console entry point, or run a command.
+The lock records what the baseline did at those hours. `verify` saves the candidate's differences, evidence, score, and verdict. WakeTrace also accepts wheels, source archives, and source folders. For a package, `--exercise` tells it whether to import a module, run an entry point, or run a command.
 
-There's also a local admission gate for a stricter check. It takes a plan, a signed approval for the baseline, and named scenarios, then returns `PASS`, `REVIEW`, `BLOCK`, or `ERROR`. It needs `strace` on your `PATH` and OpenSSL. Run `.venv/bin/python main.py gate --help` to see its inputs. The gate is local for now; it isn't a required GitHub check yet.
+There's also a stricter local admission gate. It takes a plan, a signed approval for the baseline, and named scenarios, then returns `PASS`, `REVIEW`, `BLOCK`, or `ERROR`. It needs `strace` on your `PATH` and OpenSSL. Run `.venv/bin/waketrace gate --help` to see its inputs. The gate is local for now; it isn't a required GitHub check yet.
 
 ## Run the tests
 
-With `pytest` installed in a working Python 3.14 `.venv`, and `strace` on your `PATH`:
+With `strace` on your `PATH`, install the test extras and run:
 
 ```bash
+.venv/bin/python -m pip install '.[dashboard,test]'
 .venv/bin/python -m pytest -q tests
 .venv/bin/python tests/release_smoke.py
 ```
 
-These tests use small scripts and packages written for WakeTrace. They cover the clock hook, containment, behavior locks, package setup, CLI, dashboard, and admission gate. The release smoke test builds a wheel and source archive, then checks fresh installs in temporary directories.
+The tests use little scripts and packages made for WakeTrace. They cover the clock hook, containment, locks, package setup, CLI, dashboard, and gate. The release smoke test builds a wheel and source archive and checks fresh installs in temporary folders.
 
 ## If you're looking through the code
 
-Start with `main.py` for the commands. `runner.py`, `isolation.py`, and `sandbox_hooks/` handle the contained runs and record events. `package_input.py` and `package_runner.py` handle package inputs. `lockfile.py`, `differ.py`, and `schema.py` turn runs into locks and reports. The `gate_*.py` files and `gate.py` handle plans, approvals, and admission decisions. The `demo_pkgs/`, `examples/`, and `tests/` folders have the synthetic examples and checks.
+Start with `main.py` for the commands. `runner.py`, `isolation.py`, and `sandbox_hooks/` handle the contained runs and record events. `package_input.py` and `package_runner.py` handle packages. `lockfile.py`, `differ.py`, and `schema.py` turn runs into locks and reports. The `gate_*.py` files handle the admission gate. `demo_pkgs/`, `examples/`, and `tests/` have the fake cases I used to check it.
 
 ## What a clean result means
 
-It means WakeTrace didn't find a concerning difference in the paths and times it tested. It doesn't mean the code is safe in every situation. Some native clock calls can still see real time, and a blocked network attempt doesn't prove that anything was sent. I want the report to be useful about what it *saw*, and honest about what it couldn't see.
+It means WakeTrace didn't see a concerning difference in the paths and times it tested. It doesn't prove a package is safe everywhere. Some native clock calls can still see real time, and a blocked network attempt is evidence of an attempt, not proof anything got sent. I want the report to say what it actually *saw*, including where it couldn't see enough.
+
+## AI help
+
+I used ChatGPT/Codex while building this, including planning, debugging, reviewing code and tests, and writing parts of the documentation. This README was edited with AI help too. I'm saying that openly because the useful thing here is whether the code and demo work, not pretending I did every line alone.
 
 The [standalone WakeTrace logo](docs/assets/waketrace-logo.svg) is here too if you want to use it outside the README.
