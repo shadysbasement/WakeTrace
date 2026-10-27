@@ -29,6 +29,12 @@ def run(command, env, timeout):
             detail = "wheel is incompatible with the isolated Python runtime"
         else:
             detail = f"offline package setup command failed (exit {result.returncode})"
+            diagnostic = next((line.strip() for line in reversed(output.splitlines())
+                               if line.strip().startswith(("ERROR:", "OSError:",
+                                                           "ImportError:", "ModuleNotFoundError:",
+                                                           "PermissionError:"))), None)
+            if diagnostic:
+                detail += ": " + diagnostic[:240]
         raise RuntimeError(detail)
     return result
 
