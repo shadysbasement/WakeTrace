@@ -89,5 +89,27 @@ jobs:
           /tmp/waketrace-build/bin/python -m pip install -c constraints-release.txt 'build>=1,<2' 'setuptools>=80,<82' 'wheel>=0.45,<0.47'
       - name: Required unprivileged isolation preflight
         run: /tmp/waketrace-build/bin/python main.py preflight
+      - name: Diagnose contained pip bootstrap
+        run: |
+          /tmp/waketrace-build/bin/python - <<'PY'
+          import os
+          import subprocess
+          from isolation import _base_command, limits, preflight
+          bwrap, python = preflight()
+          child = '''import subprocess, venv
+          venv.create("/work/venv", with_pip=False)
+          result = subprocess.run(["/work/venv/bin/python3", "-m", "ensurepip",
+                                   "--upgrade", "--default-pip"], capture_output=True, text=True)
+          print("ensurepip exit:", result.returncode)
+          print("ensurepip stdout:", result.stdout[-2000:])
+          print("ensurepip stderr:", result.stderr[-2000:])
+          '''
+          cmd = _base_command(bwrap, os.getcwd(), write_limit_mb=256) + ["--", python, "-S", "-c", child]
+          result = subprocess.run(cmd, env={}, capture_output=True, text=True,
+                                  preexec_fn=limits(120, 512, 8, 2048), timeout=120)
+          print("sandbox exit:", result.returncode)
+          print("sandbox stdout:", result.stdout[-3000:])
+          print("sandbox stderr:", result.stderr[-3000:])
+          PY
       - name: Build and test fresh installs outside checkout
         run: /tmp/waketrace-build/bin/python tests/release_smoke.py
