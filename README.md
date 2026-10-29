@@ -50,6 +50,8 @@ After the demo, I open the dashboard in a second terminal:
 .venv/bin/waketrace-dashboard
 ```
 
+If I open the dashboard before running the demo, I can click **Run included demo** in the sidebar. It creates the lockfile and report in the folder where I started the dashboard. The **Run a check** section is for a candidate file I choose myself; relative paths there also start from that folder.
+
 The Overview shows me the result straight away. In this run, nothing risky shows up until `+72h`, then the chart jumps from `0` to `100`:
 
 [![WakeTrace dashboard overview showing a blocked result and risk across tested hours](docs/assets/dashboard-overview.png)](docs/assets/dashboard-overview.png)

@@ -1,6 +1,8 @@
 import copy
 import json
+import os
 from pathlib import Path
+import shutil
 import sys
 import tempfile
 import unittest
@@ -19,6 +21,41 @@ LOCK = json.loads((ROOT / 'tests/fixtures/phase8/behavior.lock.json').read_text(
 
 
 class Phase8Tests(unittest.TestCase):
+    def test_dashboard_demo_uses_launch_directory(self):
+        from streamlit.testing.v1 import AppTest
+        with tempfile.TemporaryDirectory() as tmp:
+            previous = Path.cwd()
+            try:
+                os.chdir(tmp)
+                at = AppTest.from_file(str(ROOT / 'dashboard.py'), default_timeout=30).run()
+                demo_button = next(button for button in at.button
+                                   if button.label == 'Run included demo')
+                at = demo_button.click().run()
+                self.assertFalse(at.exception)
+                self.assertTrue(any('BLOCKED' in item.value for item in at.error))
+                self.assertFalse(any('failed' in item.value.lower() or
+                                     'cannot open' in item.value.lower()
+                                     for item in at.error))
+                self.assertTrue((Path(tmp) / 'behavior.lock.json').is_file())
+                self.assertTrue((Path(tmp) / 'reports/latest_report.json').is_file())
+                self.assertEqual(at.select_slider[0].value, 72)
+                shutil.copyfile(ROOT / 'demo_pkgs/trojan_v2.py', Path(tmp) / 'candidate.py')
+                shutil.copyfile(ROOT / 'demo_pkgs/demo_config.json', Path(tmp) / 'demo_config.json')
+                candidate = next(field for field in at.text_input
+                                 if field.label == 'Candidate target script or package')
+                at = candidate.set_value('candidate.py').run()
+                verify_button = next(button for button in at.button
+                                     if button.label == 'Run contained verification')
+                at = verify_button.click().run()
+                self.assertFalse(at.exception)
+                self.assertFalse(any('failed' in item.value.lower() or
+                                     'cannot open' in item.value.lower()
+                                     for item in at.error))
+                self.assertEqual(json.loads((Path(tmp) / 'reports/latest_report.json').read_text())
+                                 ['target_script'], 'candidate.py')
+            finally:
+                os.chdir(previous)
+
     def test_horizon_events_and_findings(self):
         early = horizon_view(DEMO, 0)
         late = horizon_view(DEMO, 72)

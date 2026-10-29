@@ -1,5 +1,7 @@
 import math
 from pathlib import Path
+import subprocess
+import sys
 
 import streamlit as st
 
@@ -13,12 +15,9 @@ from package_runner import run_package_horizons
 from runner import run_multi_horizon
 from schema import load_report
 
-ROOT = Path(__file__).resolve().parent
-
-
 def local_path(value):
     path = Path(value).expanduser()
-    return path if path.is_absolute() else ROOT / path
+    return path if path.is_absolute() else Path.cwd() / path
 
 
 def parse_hours(value):
@@ -33,11 +32,17 @@ def parse_hours(value):
 
 def run_check(target_name, lock_name, report_name, hours_text, timeout, setup_timeout,
               memory_mb, output_mb, write_mb, process_limit):
+    if not target_name.strip():
+        raise ValueError('Choose a candidate target before running a check.')
+    if not lock_name.strip() or not report_name.strip():
+        raise ValueError('Choose a lockfile and report path before running a check.')
     target = local_path(target_name)
     report_path = local_path(report_name)
     lock_path = local_path(lock_name)
     if not target.exists():
-        raise ValueError('Target does not exist: ' + str(target))
+        raise ValueError('Candidate target not found. Use an absolute path or a path relative to the folder where you started the dashboard.')
+    if not lock_path.is_file():
+        raise ValueError('Lockfile not found. Run the included demo or choose an existing trusted lockfile.')
     if target == report_path or lock_path == report_path:
         raise ValueError('The report path must differ from the target and lockfile.')
     hours = parse_hours(hours_text)
@@ -292,11 +297,13 @@ st.title('WakeTrace')
 st.caption('Review observed behavior across tested future horizons.')
 with st.sidebar:
     st.header('Local files')
+    st.caption('Relative paths use the folder where you started the dashboard.')
     report_name = st.text_input('Report JSON', 'reports/latest_report.json')
     lock_name = st.text_input('Lockfile JSON', 'behavior.lock.json')
+    run_demo_now = st.button('Run included demo')
     with st.expander('Run a check', expanded=False):
         st.caption('Verification uses the saved trusted lock and the contained runner. A check runs only when you press the button.')
-        target_name = st.text_input('Candidate target script or package', 'demo_pkgs/trojan_v2.py')
+        target_name = st.text_input('Candidate target script or package', '')
         hours_text = st.text_input('Hours, comma separated', '0,24,72,168')
         timeout = st.number_input('Seconds per horizon', min_value=0.1, value=10.0)
         setup_timeout = st.number_input('Package setup timeout (seconds)', min_value=0.1, value=60.0)
@@ -306,6 +313,18 @@ with st.sidebar:
         process_limit = st.number_input('Process limit', min_value=1, value=2048,
                                         help='Private cgroup quota where delegated; otherwise a per-user limit.')
         run_now = st.button('Run contained verification', type='primary')
+if run_demo_now:
+    try:
+        with st.spinner('Running the included demo in containment...'):
+            demo = subprocess.run([sys.executable, str(Path(__file__).with_name('main.py')), 'demo'],
+                                  cwd=Path.cwd(), capture_output=True, text=True, timeout=120)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        st.error('Demo could not start: ' + safe_text(exc))
+    else:
+        if demo.returncode == 0:
+            st.rerun()
+        else:
+            st.error('Demo failed: ' + safe_text(demo.stderr or 'Run waketrace preflight to check containment.'))
 if run_now:
     try:
         with st.spinner('Running contained checks at selected horizons...'):

@@ -133,11 +133,16 @@ def smoke_install(artifact, root, dashboard=False):
         root, env=clean_env, timeout=120)
     assert not (root / "host-marker").exists()
     if dashboard:
+        (root / "behavior.lock.json").unlink()
+        (root / "reports" / "latest_report.json").unlink()
         code = ("from importlib.util import find_spec; from streamlit.testing.v1 import AppTest; "
                 "app=AppTest.from_file(find_spec('dashboard').origin, default_timeout=15).run(); "
-                "app.text_input[0].set_value(__import__('sys').argv[1]).run(); "
-                "assert not app.exception")
-        run([str(python), "-c", code, str(saved)], root, env=clean_env, timeout=90)
+                "assert not app.exception; "
+                "app=next(button for button in app.button if button.label == 'Run included demo').click().run(); "
+                "assert not app.exception and app.select_slider[0].value == 72")
+        run([str(python), "-c", code], root, env=clean_env, timeout=90)
+        assert (root / "behavior.lock.json").is_file()
+        assert (root / "reports" / "latest_report.json").is_file()
 
 
 def main():
