@@ -25,7 +25,27 @@ python3 -m venv .venv
 .venv/bin/waketrace demo
 ```
 
-If `preflight` fails, the sandbox can't run on that machine yet. WakeTrace stops there instead of running the script without containment. The install adds `waketrace` for the CLI and `waketrace-dashboard` for the dashboard.
+If `preflight` fails, the sandbox can't run on that machine yet. WakeTrace stops there instead of running the script without containment. The install adds `waketrace` for the CLI, `waketrace-dashboard` for the browser dashboard, and `waketrace-terminal` for the terminal dashboard.
+
+## Check files and inspect reports in the terminal
+
+Open the terminal dashboard without starting a browser:
+
+```bash
+.venv/bin/waketrace terminal
+```
+
+The dashboard opens the **Check** page automatically when there is no saved report. Press `6` to open it later. Browse with the arrow keys, open directories with Enter, and press Backspace to go up. Enter selects a file; Space selects a source directory. Press `m` to switch between candidate, trusted baseline, and existing lockfile. To make a new lock, select a baseline you trust and press `L`. Select a candidate and press `v` to verify it against the selected lock. Checks run through WakeTrace's contained CLI; `x` cancels a running check. Press `H` to edit tested horizons, `d` to jump to a directory, `o` to change the output directory, and `i` to set the import module for package locks. The default output directory is `reports/terminal_checks`, and each run gets a unique filename. You can also start directly in a target folder with `--directory path/to/folder`.
+
+Press `1`–`5` for Overview, Timeline, Findings, Compare, and Coverage. Use the left and right arrows to choose a tested hour, and the up and down arrows to inspect events, findings, or capability categories. On Timeline, `c` cycles event categories, `b` shows blocked events, and `n` shows canary-linked events. On Findings, `[` and `]` page through linked evidence. Press `r` to reload saved files or `q` to quit. Use `--report` and `--lock` to inspect existing files. Package locks use an import exercise by default; for other package exercises use the `lock` CLI.
+
+For scripts or logs where an interactive terminal is unavailable, print a single page:
+
+```bash
+.venv/bin/waketrace terminal --once --page findings --report reports/latest_report.json
+```
+
+The separate `waketrace-terminal` command opens the same view.
 
 ## Try the demo
 
@@ -37,6 +57,8 @@ From the WakeTrace folder, you can run the demo again with:
 ```
 
 `demo` compares the included clean script with one that waits before changing its behavior. It writes `behavior.lock.json` and `reports/latest_report.json` in the folder you ran it from. Look at the findings by hour; the interesting bit is when the new behavior first shows up.
+
+For an incident-based check, run `.venv/bin/python examples/incident_monthly/run_demo.py`. It adapts the 15th-of-month trigger from a [documented malicious ScribeJava package](https://socket.dev/blog/malicious-maven-package-exfiltrates-oauth-credentials) into a safe Python target, then compares the prior day, the trigger day, and the following day. The original artifact is Java and is not executed by WakeTrace; the example uses fake credentials and a reserved destination. See [the example notes](examples/incident_monthly/README.md) for the exact command and limits.
 
 Here's an actual demo run. It stays clean at `0` and `24` hours, then catches the new behavior at `72` hours:
 

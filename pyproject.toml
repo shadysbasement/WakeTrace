@@ -17,9 +17,10 @@ test = ["pytest>=8,<10", "build>=1,<2", "pyyaml>=6,<7"]
 [project.scripts]
 waketrace = "main:main"
 waketrace-dashboard = "dashboard_cli:main"
+waketrace-terminal = "terminal_dashboard:main"
 
 [tool.setuptools]
-py-modules = ["main", "runner", "package_runner", "package_input", "isolation", "lockfile", "differ", "schema", "dashboard", "dashboard_cli", "dashboard_data", "dashboard_export", "gate", "gate_plan", "gate_prepare", "gate_schema", "gate_static", "observer"]
+py-modules = ["main", "runner", "package_runner", "package_input", "isolation", "lockfile", "differ", "schema", "dashboard", "dashboard_cli", "dashboard_data", "dashboard_export", "terminal_dashboard", "gate", "gate_plan", "gate_prepare", "gate_schema", "gate_static", "observer"]
 packages = ["sandbox_hooks", "demo_pkgs"]
 include-package-data = true
 

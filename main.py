@@ -285,8 +285,27 @@ def main(argv=None):
     verify_cmd.add_argument("--override-wheelhouse", action="store_true")
     demo_cmd = commands.add_parser("demo", help="run the included time-bomb example")
     demo_cmd.add_argument("--strict-exit", action="store_true")
+    terminal_cmd = commands.add_parser("terminal", help="browse targets, run checks, and inspect reports")
+    terminal_cmd.add_argument("--report", type=Path, default=DEFAULT_REPORT)
+    terminal_cmd.add_argument("--lock", type=Path, default=DEFAULT_LOCK)
+    terminal_cmd.add_argument("--page", choices=('overview', 'timeline', 'findings', 'compare', 'coverage', 'check'))
+    terminal_cmd.add_argument("--hour", type=float)
+    terminal_cmd.add_argument("--directory", type=Path, default=Path.cwd())
+    terminal_cmd.add_argument("--output-dir", type=Path, default=Path.cwd() / 'reports' / 'terminal_checks')
+    terminal_cmd.add_argument("--once", action="store_true", help="print one screen and exit")
     args = parser.parse_args(argv)
     try:
+        if args.command == "terminal":
+            from terminal_dashboard import main as terminal_main
+            terminal_args = ['--report', str(args.report), '--lock', str(args.lock),
+                             '--directory', str(args.directory), '--output-dir', str(args.output_dir)]
+            if args.page:
+                terminal_args += ['--page', args.page]
+            if args.hour is not None:
+                terminal_args += ['--hour', str(args.hour)]
+            if args.once:
+                terminal_args.append('--once')
+            return terminal_main(terminal_args)
         if args.command == "gate-show":
             from gate_schema import validate_result
             result = validate_result(json.loads(args.result.read_text(encoding="utf-8")))
