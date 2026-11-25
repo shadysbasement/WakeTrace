@@ -1,10 +1,8 @@
 """Exercise the real clean and malicious ScribeJava JARs in containment."""
 
 import argparse
-from datetime import datetime, timezone
 import hashlib
 import json
-import math
 from pathlib import Path
 import subprocess
 import sys
@@ -17,19 +15,8 @@ HASHES = {
     '8.3.5': 'dbf92d66441f795dae60182002248bf167779dd1e856b4daf62e9eeded307c17',
 }
 
-
-def horizons(now=None):
-    now = now or datetime.now(timezone.utc)
-    year, month = now.year, now.month
-    while True:
-        trigger = datetime(year, month, 15, 12, tzinfo=timezone.utc)
-        if (trigger - now).total_seconds() >= 48 * 3600:
-            break
-        month += 1
-        if month == 13:
-            year, month = year + 1, 1
-    active = math.ceil((trigger - now).total_seconds() / 3600)
-    return [0, active - 24, active, active + 24]
+sys.path.insert(0, str(ROOT))
+from java_scribe_runner import next_fifteenth_horizons
 
 
 def run(output_dir):
@@ -41,7 +28,7 @@ def run(output_dir):
             raise ValueError(f'ScribeJava {version} JAR hash mismatch')
     lock_path = output_dir / 'behavior.lock.json'
     report_path = output_dir / 'report.json'
-    hours = horizons()
+    hours = next_fifteenth_horizons()
     hour_arg = ','.join(map(str, hours))
     commands = (
         ([sys.executable, str(ROOT / 'main.py'), 'lock',

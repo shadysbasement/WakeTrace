@@ -1,14 +1,16 @@
 """Exercise the original date-gated ScribeJava JAR, not an adaptation."""
 
 from pathlib import Path
+from datetime import datetime, timezone
 import shutil
 
 import pytest
 
 from demo_pkgs.scribejava.run_demo import HASHES, run
 from isolation import preflight
-from java_scribe_runner import _compiler, inspect_jar
-from terminal_dashboard import CheckState, State, browser_entries, check_command, load_data
+from java_scribe_runner import _compiler, inspect_jar, next_fifteenth_horizons
+from terminal_dashboard import (CheckState, State, browser_entries, check_command,
+                                choose_path, load_data)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +28,14 @@ def test_original_jar_metadata_and_terminal_selection():
     assert malicious in browser_entries(state.check)
     command, _ = check_command(state, 'lock')
     assert command[-2:] == ['--exercise', 'scribejava-oauth']
+    state.check.horizons = '0,24,72,168'
+    choose_path(state, malicious)
+    assert state.check.horizons != '0,24,72,168'
+
+
+def test_next_fifteenth_offsets():
+    now = datetime(2026, 11, 25, tzinfo=timezone.utc)
+    assert next_fifteenth_horizons(now) == [0, 468, 492, 516]
 
 
 def test_real_jar_date_gate_is_detected(tmp_path):

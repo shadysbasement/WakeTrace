@@ -24,7 +24,7 @@ from dashboard_data import (capability_rows, coverage_notes, horizon_view,
 from dashboard_export import review_data
 from lockfile import load_lockfile
 from package_input import inspect as inspect_target
-from java_scribe_runner import inspect_jar
+from java_scribe_runner import inspect_jar, next_fifteenth_horizons
 from schema import load_report
 
 
@@ -143,6 +143,8 @@ def choose_path(state, path):
             state.message = f'Lock selected: {path.name}. Lock horizons included; press H to edit.'
         else:
             info = inspect_any_target(path)
+            if info['kind'] == 'java_jar' and check.horizons == '0,24,72,168':
+                check.horizons = ','.join(map(str, next_fifteenth_horizons()))
             if check.mode == 0:
                 check.candidate = path.resolve()
                 state.message = f'Candidate selected: {path.name} ({info["kind"]}).'

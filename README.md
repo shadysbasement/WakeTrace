@@ -27,6 +27,8 @@ python3 -m venv .venv
 
 If `preflight` fails, the sandbox can't run on that machine yet. WakeTrace stops there instead of running the script without containment. The install adds `waketrace` for the CLI, `waketrace-dashboard` for the browser dashboard, and `waketrace-terminal` for the terminal dashboard.
 
+If this checkout was previously installed in editable mode, refresh its module mapping after updating: `.venv/bin/python -m pip install -e '.[dashboard]'`.
+
 ## Check files and inspect reports in the terminal
 
 Open the terminal dashboard without starting a browser:
@@ -47,7 +49,7 @@ For scripts or logs where an interactive terminal is unavailable, print a single
 
 The separate `waketrace-terminal` command opens the same view.
 
-To select the real Java JARs directly, start with `--directory demo_pkgs/scribejava`. Select `scribejava-core-8.3.3.jar` as the trusted baseline and press `L`, then select `scribejava-core-8.3.5.jar` as the candidate and press `v`. Use horizons that include the next 15th; `demo_pkgs/scribejava/run_demo.py` calculates those hours automatically.
+To select the real Java JARs directly, start with `--directory demo_pkgs/scribejava`. Select `scribejava-core-8.3.3.jar` as the trusted baseline and press `L`, then select `scribejava-core-8.3.5.jar` as the candidate and press `v`. Selecting a ScribeJava JAR sets the default horizons around the next 15th; press `H` to edit them. `demo_pkgs/scribejava/run_demo.py` calculates the same horizons automatically.
 
 ## Try the demo
 

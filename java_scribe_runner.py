@@ -62,6 +62,21 @@ def inspect_jar(path):
             'group': group, 'version': version, 'sha256': digest}
 
 
+def next_fifteenth_horizons(now=None):
+    """Four hourly offsets spanning the next safely future 15th in UTC."""
+    now = now or datetime.now(timezone.utc)
+    year, month = now.year, now.month
+    while True:
+        trigger = datetime(year, month, 15, 12, tzinfo=timezone.utc)
+        if (trigger - now).total_seconds() >= 48 * 3600:
+            break
+        month += 1
+        if month == 13:
+            year, month = year + 1, 1
+    active = math.ceil((trigger - now).total_seconds() / 3600)
+    return [0, active - 24, active, active + 24]
+
+
 def _compiler():
     found = shutil.which('javac')
     if found:
