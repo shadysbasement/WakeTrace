@@ -695,7 +695,9 @@ def run(report_path, lock_path, state, once=False):
             size = console.size
             while True:
                 key = read_key(fd)
+                had_job = state.check.job is not None
                 completed = poll_check(state)
+                job_finished = had_job and state.check.job is None
                 if completed is not None:
                     report, lock = completed
                 if state.page == 5 and state.check.prompt and key:
@@ -721,7 +723,7 @@ def run(report_path, lock_path, state, once=False):
                     elif not handle_key(state, report, key):
                         cancel_check(state)
                         break
-                if key or completed is not None or state.check.job or console.size != size:
+                if key or completed is not None or job_finished or state.check.job or console.size != size:
                     size = console.size
                     live.update(render(report, lock, state, console.height), refresh=True)
     finally:
