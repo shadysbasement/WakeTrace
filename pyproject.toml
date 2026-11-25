@@ -20,9 +20,11 @@ waketrace-dashboard = "dashboard_cli:main"
 waketrace-terminal = "terminal_dashboard:main"
 
 [tool.setuptools]
-py-modules = ["main", "runner", "package_runner", "package_input", "isolation", "lockfile", "differ", "schema", "dashboard", "dashboard_cli", "dashboard_data", "dashboard_export", "terminal_dashboard", "gate", "gate_plan", "gate_prepare", "gate_schema", "gate_static", "observer"]
-packages = ["sandbox_hooks", "demo_pkgs"]
+py-modules = ["main", "runner", "package_runner", "package_input", "java_scribe_runner", "isolation", "lockfile", "differ", "schema", "dashboard", "dashboard_cli", "dashboard_data", "dashboard_export", "terminal_dashboard", "gate", "gate_plan", "gate_prepare", "gate_schema", "gate_static", "observer"]
+packages = ["sandbox_hooks", "demo_pkgs", "demo_pkgs.scribejava"]
 include-package-data = true
 
 [tool.setuptools.package-data]
 demo_pkgs = ["*.json"]
+"demo_pkgs.scribejava" = ["*.jar", "*.md"]
+sandbox_hooks = ["ScribeProbe.java", "java_timewarp.c"]

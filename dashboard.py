@@ -10,6 +10,7 @@ from dashboard_data import (capability_rows, coverage_notes, event_row, event_st
                             linked_events, safe_text)
 from dashboard_export import review_data, review_html, review_json
 from differ import compare_with_lockfile
+from java_scribe_runner import EXERCISE as JAVA_EXERCISE, run_java_horizons
 from lockfile import load_lockfile
 from package_runner import run_package_horizons
 from runner import run_multi_horizon
@@ -47,7 +48,14 @@ def run_check(target_name, lock_name, report_name, hours_text, timeout, setup_ti
         raise ValueError('The report path must differ from the target and lockfile.')
     hours = parse_hours(hours_text)
     lock = load_lockfile(lock_path)
-    if 'artifact' in lock:
+    if lock.get('java_exercise') and target.suffix.lower() != '.jar':
+        raise ValueError('This ScribeJava lockfile requires a .jar candidate.')
+    if target.suffix.lower() == '.jar':
+        if lock.get('java_exercise') != JAVA_EXERCISE:
+            raise ValueError('Select a ScribeJava baseline lockfile for this JAR.')
+        runs = run_java_horizons(target, hours, timeout, memory_mb, output_mb,
+                                 write_mb, process_limit)
+    elif 'artifact' in lock:
         runs = run_package_horizons(target, lock['exercise'], hours,
                                     lock['wheelhouse']['source'], lock['file_age_hours'],
                                     timeout, setup_timeout, memory_mb, output_mb,
@@ -295,19 +303,23 @@ def show_compare(report, lock):
 st.set_page_config(page_title='WakeTrace investigation', layout='wide')
 st.title('WakeTrace')
 st.caption('Review observed behavior across tested future horizons.')
+if 'next_report_name' in st.session_state:
+    st.session_state['report_name'] = st.session_state.pop('next_report_name')
+    st.session_state['lock_name'] = st.session_state.pop('next_lock_name')
 with st.sidebar:
     st.header('Local files')
     st.caption('Relative paths use the folder where you started the dashboard.')
-    report_name = st.text_input('Report JSON', 'reports/latest_report.json')
-    lock_name = st.text_input('Lockfile JSON', 'behavior.lock.json')
+    report_name = st.text_input('Report JSON', 'reports/latest_report.json', key='report_name')
+    lock_name = st.text_input('Lockfile JSON', 'behavior.lock.json', key='lock_name')
     run_demo_now = st.button('Run included demo')
+    run_java_demo_now = st.button('Run real ScribeJava JAR demo')
     with st.expander('Run a check', expanded=False):
         st.caption('Verification uses the saved trusted lock and the contained runner. A check runs only when you press the button.')
-        target_name = st.text_input('Candidate target script or package', '')
+        target_name = st.text_input('Candidate target script, package, or ScribeJava JAR', '')
         hours_text = st.text_input('Hours, comma separated', '0,24,72,168')
         timeout = st.number_input('Seconds per horizon', min_value=0.1, value=10.0)
         setup_timeout = st.number_input('Package setup timeout (seconds)', min_value=0.1, value=60.0)
-        memory_mb = st.number_input('Memory limit (MB)', min_value=64, value=512)
+        memory_mb = st.number_input('Memory limit (MB)', min_value=64, value=1024)
         output_mb = st.number_input('Output limit (MB)', min_value=1, value=8)
         write_mb = st.number_input('Writable space (MB)', min_value=1, value=256)
         process_limit = st.number_input('Process limit', min_value=1, value=2048,
@@ -325,6 +337,23 @@ if run_demo_now:
             st.rerun()
         else:
             st.error('Demo failed: ' + safe_text(demo.stderr or 'Run waketrace preflight to check containment.'))
+if run_java_demo_now:
+    output_dir = Path.cwd() / 'reports' / 'scribejava-real'
+    try:
+        with st.spinner('Exercising the real JARs in containment...'):
+            demo = subprocess.run(
+                [sys.executable, str(Path(__file__).with_name('demo_pkgs') / 'scribejava' / 'run_demo.py'),
+                 '--output', str(output_dir)], cwd=Path.cwd(), capture_output=True,
+                text=True, timeout=120, check=False)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        st.error('ScribeJava demo could not start: ' + safe_text(exc))
+    else:
+        if demo.returncode == 0:
+            st.session_state['next_report_name'] = str(output_dir / 'report.json')
+            st.session_state['next_lock_name'] = str(output_dir / 'behavior.lock.json')
+            st.rerun()
+        else:
+            st.error('ScribeJava demo failed: ' + safe_text(demo.stderr or demo.stdout))
 if run_now:
     try:
         with st.spinner('Running contained checks at selected horizons...'):

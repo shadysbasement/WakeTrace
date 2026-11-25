@@ -150,6 +150,8 @@ def compare_with_lockfile(lock_data, multi_horizon_result, project_root=None,
                            sensitive_env_patterns, sensitive_file_patterns)
     if bool(lock_data.get('artifact')) != bool(multi_horizon_result.get('artifact')):
         raise ValueError('script and package lockfiles cannot be mixed')
+    if lock_data.get('java_exercise') != multi_horizon_result.get('java_exercise'):
+        raise ValueError('ScribeJava lockfile and candidate exercise must match')
     root = _project_root(multi_horizon_result, project_root)
     target = _target_path(multi_horizon_result, root)
     runs = _run_items(multi_horizon_result)
@@ -269,6 +271,10 @@ def compare_with_lockfile(lock_data, multi_horizon_result, project_root=None,
                       baseline_file_age_hours=lock_data['file_age_hours'],
                       file_age_hours=multi_horizon_result['file_age_hours'],
                       baseline_wheelhouse=lock_data['wheelhouse'], candidate_wheelhouse=multi_horizon_result['wheelhouse'])
+    if 'java_exercise' in multi_horizon_result:
+        report.update(java_exercise=multi_horizon_result['java_exercise'],
+                      baseline_java_artifact=lock_data['java_artifact'],
+                      candidate_java_artifact=multi_horizon_result['java_artifact'])
     if report_out_path is not None:
         _save(report, report_out_path)
     else:

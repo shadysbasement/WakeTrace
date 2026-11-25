@@ -142,6 +142,9 @@ def build_lock_data(run_result: dict, project_root=None):
                              "dependencies": first["dependencies"],
                              "python": first["python"],
                              "build_result": first["build_result"]})
+    elif 'java_exercise' in run_result:
+        result.update(java_exercise=run_result['java_exercise'],
+                      java_artifact=run_result['java_artifact'])
     elif "file_age_hours" in run_result:
         result["file_age_hours"] = run_result["file_age_hours"]
     return validate_lock(result)

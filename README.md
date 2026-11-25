@@ -47,6 +47,8 @@ For scripts or logs where an interactive terminal is unavailable, print a single
 
 The separate `waketrace-terminal` command opens the same view.
 
+To select the real Java JARs directly, start with `--directory demo_pkgs/scribejava`. Select `scribejava-core-8.3.3.jar` as the trusted baseline and press `L`, then select `scribejava-core-8.3.5.jar` as the candidate and press `v`. Use horizons that include the next 15th; `demo_pkgs/scribejava/run_demo.py` calculates those hours automatically.
+
 ## Try the demo
 
 From the WakeTrace folder, you can run the demo again with:
@@ -58,7 +60,7 @@ From the WakeTrace folder, you can run the demo again with:
 
 `demo` compares the included clean script with one that waits before changing its behavior. It writes `behavior.lock.json` and `reports/latest_report.json` in the folder you ran it from. Look at the findings by hour; the interesting bit is when the new behavior first shows up.
 
-For an incident-based check, run `.venv/bin/python examples/incident_monthly/run_demo.py`. It adapts the 15th-of-month trigger from a [documented malicious ScribeJava package](https://socket.dev/blog/malicious-maven-package-exfiltrates-oauth-credentials) into a safe Python target, then compares the prior day, the trigger day, and the following day. The original artifact is Java and is not executed by WakeTrace; the example uses fake credentials and a reserved destination. See [the example notes](examples/incident_monthly/README.md) for the exact command and limits.
+To run the **actual malicious Java package**, use `.venv/bin/python demo_pkgs/scribejava/run_demo.py`. It compares the clean ScribeJava 8.3.3 JAR with the malicious 8.3.5 JAR across dates around the 15th. The real JAR runs inside Bubblewrap with synthetic credentials; a trusted HttpClient proxy records and blocks the prepared request. You need Java 17+, a JDK compiler, and a C compiler. See [the JAR exercise notes](demo_pkgs/scribejava/README.md) for hashes, scope, and requirements. The older [Python incident adaptation](examples/incident_monthly/README.md) remains available separately.
 
 Here's an actual demo run. It stays clean at `0` and `24` hours, then catches the new behavior at `72` hours:
 
@@ -73,6 +75,8 @@ After the demo, I open the dashboard in a second terminal:
 ```
 
 If I open the dashboard before running the demo, I can click **Run included demo** in the sidebar. It creates the lockfile and report in the folder where I started the dashboard. The **Run a check** section is for a candidate file I choose myself; relative paths there also start from that folder.
+
+The sidebar also has **Run real ScribeJava JAR demo**. It creates a separate lock and report under `reports/scribejava-real` and opens that report. You can select another ScribeJava JAR in **Run a check** against that lock.
 
 The Overview shows me the result straight away. In this run, nothing risky shows up until `+72h`, then the chart jumps from `0` to `100`:
 

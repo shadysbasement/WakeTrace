@@ -24,6 +24,7 @@ from dashboard_data import (capability_rows, coverage_notes, horizon_view,
 from dashboard_export import review_data
 from lockfile import load_lockfile
 from package_input import inspect as inspect_target
+from java_scribe_runner import inspect_jar
 from schema import load_report
 
 
@@ -32,6 +33,10 @@ CATEGORIES = ('All', 'file', 'env', 'net', 'process', 'native', 'output', 'healt
 CHECK_MODES = ('Candidate', 'Trusted baseline', 'Existing lock')
 VERDICT_STYLES = {'CLEAN': 'green', 'WARNING': 'yellow',
                   'BLOCKED': 'red', 'INCOMPLETE': 'yellow'}
+
+
+def inspect_any_target(path):
+    return inspect_jar(path) if Path(path).suffix.lower() == '.jar' else inspect_target(path)
 
 
 @dataclass
@@ -79,8 +84,13 @@ def load_data(report_path, lock_path):
         lock = None
     if lock and bool(lock.get('artifact')) != bool(report.get('candidate_artifact')):
         lock = None
+    if lock and lock.get('java_exercise') != report.get('java_exercise'):
+        lock = None
     if lock and lock.get('artifact') and report.get('baseline_artifact') and \
             lock['artifact'].get('sha256') != report['baseline_artifact'].get('sha256'):
+        lock = None
+    if lock and lock.get('java_artifact') and report.get('baseline_java_artifact') and \
+            lock['java_artifact'].get('sha256') != report['baseline_java_artifact'].get('sha256'):
         lock = None
     return report, lock
 
@@ -117,7 +127,7 @@ def browser_entries(check):
         if path.is_dir():
             paths.append(path)
         elif path.is_file() and (path.suffix == '.json' if check.mode == 2 else
-                                 path.suffix in ('.py', '.whl') or path.name.endswith('.tar.gz')):
+                                 path.suffix in ('.py', '.whl', '.jar') or path.name.endswith('.tar.gz')):
             paths.append(path)
     return sorted(paths, key=lambda path: (not path.is_dir(), path.name.lower()))
 
@@ -132,7 +142,7 @@ def choose_path(state, path):
             check.horizons = ','.join(f'{hour:g}' for hour in hours)
             state.message = f'Lock selected: {path.name}. Lock horizons included; press H to edit.'
         else:
-            info = inspect_target(path)
+            info = inspect_any_target(path)
             if check.mode == 0:
                 check.candidate = path.resolve()
                 state.message = f'Candidate selected: {path.name} ({info["kind"]}).'
@@ -157,10 +167,12 @@ def check_command(state, kind):
             raise ValueError('Select a candidate and an existing or new lock first.')
         target = check.candidate
         baseline = load_lockfile(check.lock_file)
-        if bool(baseline.get('artifact')) != (inspect_target(target)['kind'] in
+        if bool(baseline.get('java_exercise')) != (target.suffix.lower() == '.jar'):
+            raise ValueError('Candidate and lock must both use the ScribeJava JAR exercise.')
+        if bool(baseline.get('artifact')) != (inspect_any_target(target)['kind'] in
                                             ('wheel', 'sdist', 'source_tree')):
             raise ValueError('Candidate and lock must both be scripts or both be packages.')
-    info = inspect_target(target)
+    info = inspect_any_target(target)
     stamp = f'{int(time.time())}-{time.time_ns() % 1_000_000_000:09d}'
     suffix = 'lock.json' if kind == 'lock' else 'report.json'
     output = check.output_dir / f'{target.stem}-{stamp}.{suffix}'
@@ -172,6 +184,8 @@ def check_command(state, kind):
             if not check.module:
                 raise ValueError('Set the package import module with i first.')
             command += ['--exercise', 'import', '--module', check.module]
+        elif info['kind'] == 'java_jar':
+            command += ['--exercise', 'scribejava-oauth']
     else:
         command += ['--baseline', str(check.lock_file), '--report', str(output)]
     return command, output

@@ -11,6 +11,7 @@ from lockfile import build_lock_data, load_lockfile, save_lockfile
 from runner import run_multi_horizon
 from package_input import inspect
 from package_runner import exercise_spec, run_package_horizons
+from java_scribe_runner import EXERCISE as JAVA_EXERCISE, run_java_horizons
 
 try:
     from rich.console import Console
@@ -137,6 +138,8 @@ def verify(script, baseline, report_path, horizons, timeout, threshold,
            memory_mb=512, output_mb=8, write_limit_mb=32, process_limit=2048,
            file_age_hours=None, policy=None):
     lock = load_lockfile(baseline)
+    if lock.get('java_exercise'):
+        raise ValueError('ScribeJava lockfile requires a .jar candidate')
     if file_age_hours is None:
         file_age_hours = lock.get("file_age_hours", 0)
     runs = run_multi_horizon(script, horizons_hours=horizons, timeout_sec=timeout,
@@ -236,6 +239,47 @@ def _package_verify(args):
     return report
 
 
+def _java_runs(args):
+    return run_java_horizons(
+        args.target_script, args.horizons, args.timeout, args.memory_mb,
+        args.output_mb, args.write_mb or 32, args.process_limit)
+
+
+def _java_lock(args):
+    if args.exercise != 'scribejava-oauth' or args.file_age_hours or args.allow_net:
+        raise ValueError('Java lock needs --exercise scribejava-oauth and no file-age or network override')
+    runs = _java_runs(args)
+    check_runs(runs)
+    lock = build_lock_data(runs)
+    save_lockfile(lock, args.output)
+    show_table('ScribeJava behavioral lock', ('Field', 'Value'), [
+        ('Artifact', f"{runs['java_artifact']['group']}:{runs['java_artifact']['name']}:{runs['java_artifact']['version']}"),
+        ('SHA-256', runs['java_artifact']['sha256']),
+        ('Exercise', JAVA_EXERCISE),
+        ('Horizons', ', '.join(hour_label(h) for h in args.horizons))])
+    say(f'Saved lockfile: {args.output}')
+    return lock
+
+
+def _java_verify(args):
+    lock = load_lockfile(args.baseline)
+    if lock.get('java_exercise') != JAVA_EXERCISE:
+        raise ValueError('ScribeJava candidate needs a ScribeJava baseline lockfile')
+    if args.exercise not in (None, 'scribejava-oauth') or args.file_age_hours:
+        raise ValueError('Java verification uses the saved ScribeJava exercise without file-age override')
+    runs = _java_runs(args)
+    report = compare_with_lockfile(lock, runs, block_threshold=args.threshold,
+                                   report_out_path=args.report, policy=args.policy_data)
+    show_table('ScribeJava comparison', ('Field', 'Value'), [
+        ('Baseline', f"{lock['java_artifact']['group']}:{lock['java_artifact']['name']}:{lock['java_artifact']['version']}"),
+        ('Candidate', f"{runs['java_artifact']['group']}:{runs['java_artifact']['name']}:{runs['java_artifact']['version']}"),
+        ('SHA-256', runs['java_artifact']['sha256']),
+        ('Horizons', ', '.join(hour_label(h) for h in args.horizons))])
+    banner(report['verdict'], report['risk_score'])
+    say(f'Saved report: {args.report}')
+    return report
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="WakeTrace behavioral time-warp checker")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -267,14 +311,14 @@ def main(argv=None):
     verify_cmd.add_argument('--policy', type=Path, help='validated JSON risk policy')
     verify_cmd.add_argument("--timeout", type=positive_float, default=10)
     for command in (lock_cmd, verify_cmd):
-        command.add_argument("--memory-mb", type=positive_int, default=512)
+        command.add_argument("--memory-mb", type=positive_int)
         command.add_argument("--output-mb", type=positive_int, default=8)
         command.add_argument("--write-mb", type=positive_int)
         command.add_argument("--process-limit", type=positive_int, default=2048)
         command.add_argument("--file-age-hours", type=float)
         command.add_argument("--setup-timeout", type=positive_float, default=60)
         command.add_argument("--wheelhouse", type=Path)
-        command.add_argument("--exercise", choices=("import", "console", "command"))
+        command.add_argument("--exercise", choices=("import", "console", "command", "scribejava-oauth"))
         command.add_argument("--module")
         command.add_argument("--entry")
         command.add_argument("--test-argv", help='JSON argv, e.g. ["python","-m","checks"]')
@@ -348,9 +392,18 @@ def main(argv=None):
             if args.policy_data is not None:
                 policy_config(args.policy_data)
         if args.command in ("lock", "verify"):
+            is_java = args.target_script.suffix.lower() == '.jar'
+            args.memory_mb = args.memory_mb or (1024 if is_java else 512)
             if args.file_age_hours is not None and (not math.isfinite(args.file_age_hours) or
                                                     args.file_age_hours < 0):
                 raise ValueError("file age must be a non-negative finite number")
+            if is_java:
+                if args.command == 'lock':
+                    _java_lock(args)
+                    return 0
+                report = _java_verify(args)
+                return 2 if report['verdict'] == 'INCOMPLETE' else \
+                    1 if report['verdict'] == 'BLOCKED' else 0
             kind = inspect(args.target_script)["kind"]
             if kind in ("wheel", "sdist", "source_tree"):
                 if args.command == "lock":
